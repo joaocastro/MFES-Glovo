@@ -1,4 +1,4 @@
-class Store
+class Store is subclass of Seller
 types
 -- TODO Define types here
 values
