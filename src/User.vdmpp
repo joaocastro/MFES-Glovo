@@ -14,11 +14,13 @@ values
 instance variables
 -- TODO Define instance variables here
 operations
-	public User: String * String * String ==> User
-			User(n, e, p) == (
+	public User: String * String * String * String * rat ==> User
+			User(n, e, p, c, b) == (
 				name:= n;
 				email:= e;
 				password := p;
+				city := c;
+				balance := b;
 				return self;
 	);
 	public getName: () ==> String
