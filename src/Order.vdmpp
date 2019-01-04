@@ -1,14 +1,87 @@
 class Order
+
 types
--- TODO Define types here
-values
--- TODO Define values here
+
+	public String = seq of char;
+	public TimeStamp :: minutes : nat
+											seconds : nat;
+	public State = <processing> | <waiting> | <delivering> | <delivered>;
+
 instance variables
--- TODO Define instance variables here
+
+	private deliveryAddress: String := [];
+	private deliveryPrice: rat;
+	private deliveryTime: TimeStamp;
+	private items: seq of Item := [];
+	private seller: Seller;
+	private state: State := <processing>;
+	private driver: Driver;
+
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	public Order : String * rat * TimeStamp * seq of Item * Seller ==> Order
+		Order (orderDeliveryAddress, orderDeliveryPrice, orderDeliveryTime, orderItems, orderSeller) == (
+			deliveryAddress := orderDeliveryAddress;
+			deliveryPrice := orderDeliveryPrice;
+			deliveryTime := orderDeliveryTime;
+			items := orderItems;
+			seller := orderSeller;
+			return self
+		)
+	pre len orderDeliveryAddress > 0 and orderDeliveryPrice > 0 and len orderItems > 0 and forall item in set elems orderItems & item in set elems seller.GetItems();
+
+	-- returns the order's delivery address
+	pure public GetDeliveryAddress : () ==> String
+		GetDeliveryAddress () == (
+			return deliveryAddress;
+	);
+
+	-- returns the order's delivery price
+	pure public GetDeliveryPrice : () ==> rat
+		GetDeliveryPrice () == (
+			return deliveryPrice;
+	);
+	
+	-- returns the order's total price
+	pure public GetTotalPrice : () ==> rat
+		GetTotalPrice () == (
+			dcl totalPrice : rat := deliveryPrice;
+			
+			for item in items do (
+				totalPrice := totalPrice + item.GetPrice();
+			);
+			
+			return totalPrice;
+	);
+	
+	-- returns the order's delivery time
+	pure public GetDeliveryTime : () ==> TimeStamp
+		GetDeliveryTime () == (
+			return deliveryTime;
+	);
+	
+	-- returns the order's items
+	pure public GetItems : () ==> seq of Item
+		GetItems () == (
+			return items;
+	);
+	
+	-- returns the order's seller
+	pure public GetSeller : () ==> Seller
+		GetSeller () == (
+			return seller;
+	);
+	
+	-- returns the order's state
+	pure public GetState : () ==> State
+		GetState () == (
+			return state;
+	);
+	
+	-- returns the order's driver
+	pure public GetDriver : () ==> Driver
+		GetDriver () == (
+			return driver;
+	);
+
 end Order

@@ -1,14 +1,41 @@
 class Store is subclass of Seller
 types
--- TODO Define types here
-values
--- TODO Define values here
+
+	public String = seq of char;
+	public Category = <Farmacia> |
+		<Electronica> |
+		<Mercado> |
+		<Roupa> |
+		<Livraria> |
+		<Florista>;
+
 instance variables
--- TODO Define instance variables here
+
+		private category : Category;
+
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	-- default constructor
+	public Store : () ==> Store
+		Store () == (
+			return self
+		);
+	
+	-- constructor with all paremeters
+	public Store : String * String * String * String * Category ==> Store
+		Store (storeName, storeDescription, storeAddress, storeCity, storeCategory) == (
+			name := storeName;
+			description := storeDescription;
+			address := storeAddress;
+			city := storeCity;
+			category := storeCategory;
+			return self
+		)
+	pre len storeName > 0 and len storeDescription > 0 and len storeAddress > 0 and len storeCity > 0;
+
+	pure public GetCategory : () ==> Category
+		GetCategory () == (
+			return category;
+	);
+
 end Store

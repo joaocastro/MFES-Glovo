@@ -1,14 +1,47 @@
 class Item
+
 types
--- TODO Define types here
-values
--- TODO Define values here
+	public String = seq of char;
+
 instance variables
--- TODO Define instance variables here
+	private name: String := [];
+	private info: String := [];
+	private price: rat;
+	
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	-- default constructor
+	public Item : () ==> Item
+		Item () == (
+			return self
+		);
+	
+	-- constructor with all paremeters
+	public Item : String * String * rat ==> Item
+		Item (itemName, itemInfo, itemPrice) == (
+			name := itemName;
+			info := itemInfo;
+			price := itemPrice;
+			return self
+		)
+	pre len itemName > 0 and len itemInfo > 0 and itemPrice > 0;
+	
+	-- returns the seller's name
+	pure public GetName : () ==> String
+		GetName () == (
+			return name;
+	);
+	
+	-- returns the seller's description
+	pure public GetInfo : () ==> String
+		GetInfo () == (
+			return info;
+	);
+	
+	-- returns the seller's name
+	pure public GetPrice : () ==> rat
+		GetPrice () == (
+			return price;
+	);
+
 end Item

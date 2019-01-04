@@ -1,14 +1,70 @@
 class Seller
+
 types
--- TODO Define types here
-values
--- TODO Define values here
+
+	public String = seq of char;
+
 instance variables
--- TODO Define instance variables here
+
+	protected name: String := [];
+	protected description: String := [];
+	protected address: String := [];
+	protected city: String := [];
+	protected items: seq of Item := [];
+
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	-- default constructor
+	public Seller : () ==> Seller
+		Seller () == (
+			return self
+		);
+	
+	-- constructor with all paremeters
+	public Seller : String * String * String * String ==> Seller
+		Seller (sellerName, sellerDescription, sellerAddress, sellerCity) == (
+			name := sellerName;
+			description := sellerDescription;
+			address := sellerAddress;
+			city := sellerCity;
+			return self
+		)
+	pre len sellerName > 0 and len sellerDescription > 0 and len sellerAddress > 0 and len sellerCity > 0;
+	
+	-- returns the seller's name
+	pure public GetName : () ==> String
+		GetName () == (
+			return name;
+	);
+	
+	-- returns the seller's description
+	pure public GetDescription : () ==> String
+		GetDescription () == (
+			return description;
+	);
+	
+	-- returns the seller's address
+	pure public GetAddress : () ==> String
+		GetAddress () == (
+			return address;
+	);
+	
+	-- returns the seller's city
+	pure public GetCity : () ==> String
+		GetCity () == (
+			return city;
+	);
+	
+	-- returns the seller's items
+	pure public GetItems : () ==> seq of Item
+		GetItems () == (
+			return items;
+		);
+		
+	-- add items to seller
+	public AddItems : seq of Item ==> ()
+		AddItems(newItems) == (
+			items := items ^ newItems;
+		);
+
 end Seller
