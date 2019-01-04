@@ -6,7 +6,7 @@ types
 instance variables
 	private name: String := [];
 	private info: String := [];
-	private price: rat := 0;
+	private price: rat;
 	
 operations
 

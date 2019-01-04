@@ -1,14 +1,44 @@
 class Restaurant is subclass of Seller
 types
--- TODO Define types here
-values
--- TODO Define values here
+
+	public String = seq of char;
+	public Category = <Asiatica> |
+		<Fast_Food> |
+		<Churrasco> |
+		<Indiana> |
+		<Internacional> |
+		<Italiana> |
+		<Japonesa> |
+		<Portuguesa> |
+		<Saudavel>;
+
 instance variables
--- TODO Define instance variables here
+
+		private category : Category;
+
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	-- default constructor
+	public Restaurant : () ==> Restaurant
+		Restaurant () == (
+			return self
+		);
+	
+	-- constructor with all paremeters
+	public Restaurant : String * String * String * String * Category ==> Restaurant
+		Restaurant (restaurantName, restaurantDescription, restaurantAddress, restaurantCity, restaurantCategory) == (
+			name := restaurantName;
+			description := restaurantDescription;
+			address := restaurantAddress;
+			city := restaurantCity;
+			category := restaurantCategory;
+			return self
+		)
+	pre len restaurantName > 0 and len restaurantDescription > 0 and len restaurantAddress > 0 and len restaurantCity > 0;
+
+	pure public GetCategory : () ==> Category
+		GetCategory () == (
+			return category;
+	);
+
 end Restaurant

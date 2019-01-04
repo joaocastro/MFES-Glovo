@@ -6,10 +6,11 @@ types
 
 instance variables
 
-	private name: String := [];
-	private description: String := [];
-	private location: String := [];
-	private items: seq of Item := [];
+	protected name: String := [];
+	protected description: String := [];
+	protected address: String := [];
+	protected city: String := [];
+	protected items: seq of Item := [];
 
 operations
 
@@ -20,14 +21,15 @@ operations
 		);
 	
 	-- constructor with all paremeters
-	public Seller : String * String * String ==> Seller
-		Seller (sellerName, sellerDescription, sellerLocation) == (
+	public Seller : String * String * String * String ==> Seller
+		Seller (sellerName, sellerDescription, sellerAddress, sellerCity) == (
 			name := sellerName;
 			description := sellerDescription;
-			location := sellerLocation;
+			address := sellerAddress;
+			city := sellerCity;
 			return self
 		)
-	pre len sellerName > 0 and len sellerDescription > 0 and len sellerLocation > 0;
+	pre len sellerName > 0 and len sellerDescription > 0 and len sellerAddress > 0 and len sellerCity > 0;
 	
 	-- returns the seller's name
 	pure public GetName : () ==> String
@@ -41,10 +43,16 @@ operations
 			return description;
 	);
 	
-	-- returns the seller's name
-	pure public GetLocation : () ==> String
-		GetLocation () == (
-			return location;
+	-- returns the seller's address
+	pure public GetAddress : () ==> String
+		GetAddress () == (
+			return address;
+	);
+	
+	-- returns the seller's city
+	pure public GetCity : () ==> String
+		GetCity () == (
+			return city;
 	);
 	
 	-- returns the seller's items
