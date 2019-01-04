@@ -1,7 +1,7 @@
 class Store is subclass of Seller
+
 types
 
-	public String = seq of char;
 	public Category = <Farmacia> |
 		<Electronica> |
 		<Mercado> |

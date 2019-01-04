@@ -4,7 +4,7 @@ import java.util.*;
 import org.overture.codegen.runtime.*;
 
 @SuppressWarnings("all")
-public class Glovo {
+public class GlovoApp {
   private VDMSeq sellers = SeqUtil.seq();
   private VDMSeq drivers = SeqUtil.seq();
   private VDMSeq users = SeqUtil.seq();
@@ -23,8 +23,8 @@ public class Glovo {
   public VDMSeq getAvailableDrivers() {
 
     VDMSeq availableDrivers = SeqUtil.seq();
-    for (Iterator iterator_5 = drivers.iterator(); iterator_5.hasNext(); ) {
-      Driver driver = (Driver) iterator_5.next();
+    for (Iterator iterator_6 = drivers.iterator(); iterator_6.hasNext(); ) {
+      Driver driver = (Driver) iterator_6.next();
       {
         if (Utils.equals(driver.getStatus(), Glovo.quotes.availableQuote.getInstance())) {
           availableDrivers = SeqUtil.conc(Utils.copy(availableDrivers), SeqUtil.seq(driver));
@@ -69,11 +69,11 @@ public class Glovo {
     }
   }
 
-  public Glovo() {}
+  public GlovoApp() {}
 
   public String toString() {
 
-    return "Glovo{"
+    return "GlovoApp{"
         + "sellers := "
         + Utils.toString(sellers)
         + ", drivers := "

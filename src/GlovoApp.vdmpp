@@ -1,4 +1,4 @@
-class Glovo
+class GlovoApp
 
 types
 	
@@ -82,4 +82,4 @@ operations
 				order.startDelivery(hd availableDrivers);
 		);
 
-end Glovo
+end GlovoApp

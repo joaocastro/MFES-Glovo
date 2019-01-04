@@ -1,7 +1,7 @@
 class Restaurant is subclass of Seller
+
 types
 
-	public String = seq of char;
 	public Category = <Asiatica> |
 		<Fast_Food> |
 		<Churrasco> |
