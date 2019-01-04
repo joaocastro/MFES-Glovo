@@ -11,6 +11,7 @@ instance variables
 	protected address: String := [];
 	protected city: String := [];
 	protected items: seq of Item := [];
+	protected deliveryPrice: rat := 0;
 
 operations
 
@@ -21,12 +22,13 @@ operations
 		);
 	
 	-- constructor with all paremeters
-	public Seller : String * String * String * String ==> Seller
-		Seller (sellerName, sellerDescription, sellerAddress, sellerCity) == (
+	public Seller : String * String * String * String * rat ==> Seller
+		Seller (sellerName, sellerDescription, sellerAddress, sellerCity, sellerDeliveryPrice) == (
 			name := sellerName;
 			description := sellerDescription;
 			address := sellerAddress;
 			city := sellerCity;
+			deliveryPrice := sellerDeliveryPrice;
 			return self
 		)
 	pre len sellerName > 0 and len sellerDescription > 0 and len sellerAddress > 0 and len sellerCity > 0;
@@ -53,6 +55,12 @@ operations
 	pure public getCity : () ==> String
 		getCity () == (
 			return city;
+	);
+	
+	-- returns the seller's delivery price
+	pure public getDeliveryPrice : () ==> rat
+		getDeliveryPrice () == (
+			return deliveryPrice;
 	);
 	
 	-- returns the seller's items

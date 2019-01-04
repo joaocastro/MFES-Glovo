@@ -6,12 +6,80 @@ types
 
 instance variables
 
-	private sellers: seq of Seller;
-	private drivers: seq of Driver;
-	private users: seq of User; 
+	private sellers: seq of Seller := [];
+	private drivers: seq of Driver := [];
+	private users: seq of User := [];
+	private orders: seq of Order := [];
 
 operations
 
+	-- returns all the available sellers
+	pure public getSellers : () ==> seq of Seller
+		getSellers () == (
+			return sellers;
+	);
 	
+	-- returns all the available drivers
+	pure public getDrivers : () ==> seq of Driver
+		getDrivers () == (
+			return drivers;
+	);
+	
+	pure public getAvailableDrivers : () ==> seq of Driver
+		getAvailableDrivers () == (
+			dcl availableDrivers : seq of Driver := [];
+			
+			for driver in drivers do (
+				if driver.getStatus() = <available> then
+					availableDrivers := availableDrivers ^ [driver];
+			);
+			
+			return availableDrivers;
+		);
+	
+	-- returns all the available users
+	pure public getUsers : () ==> seq of User
+		getUsers () == (
+			return users;
+	);
+
+	-- returns all the available orders
+	pure public getOrders : () ==> seq of Order
+		getOrders () == (
+			return orders;
+	);
+	
+	-- adds a seller to Glovo
+	public addSeller : Seller ==> ()
+		addSeller (newSeller) == (
+			sellers := sellers ^ [newSeller];
+		)
+		pre forall seller in set elems sellers & seller.getName() <> newSeller.getName();
+	
+	-- adds a driver to Glovo
+	public addDriver : Driver ==> ()
+		addDriver (newDriver) == (
+			drivers := drivers ^ [newDriver];
+		)
+		pre forall driver in set elems drivers & driver.getName() <> newDriver.getName();
+		
+	-- registers a user in Glovo
+	public registerUser : User ==> ()
+		registerUser (newUser) == (
+			users := users ^ [newUser];
+		)
+		pre forall user in set elems users & user.getName() <> newUser.getName();
+		
+	-- makes a new order
+	public addOrder : Order ==> ()
+		addOrder (order) == (			
+			dcl availableDrivers : seq of Driver;
+
+			orders := orders ^ [order];
+			
+			availableDrivers := getAvailableDrivers();
+			if len availableDrivers > 0 then 
+				order.startDelivery(hd availableDrivers);
+		);
 
 end Glovo

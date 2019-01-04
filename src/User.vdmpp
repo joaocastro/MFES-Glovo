@@ -1,53 +1,56 @@
 class User
 
+types
+	
+	public String = seq of char;
+
 instance variables
+
 	private name: String := [];
-	private email: String := [];
-	private password: String := [];
 	private city: String := [];
 	private balance: rat := 0;
 	
-types
-	public String = seq of char;
-values
--- TODO Define values here
-instance variables
--- TODO Define instance variables here
 operations
-	public User: String * String * String * String * rat ==> User
-			User(n, e, p, c, b) == (
-				name:= n;
-				email:= e;
-				password := p;
-				city := c;
-				balance := b;
+
+	-- constructor
+	public User: String * String ==> User
+			User(userName, userCity) == (
+				name := userName;
+				city := userCity;
 				return self;
-	);
-	public getName: () ==> String
+	)
+	pre len userName > 0 and len userCity > 0;
+	
+	-- returns the user's name
+	pure public getName: () ==> String
 		getName() == (
 			return name;
 		);
-	public getBalance: () ==> rat
+		
+	-- returns the user's balance
+	pure public getBalance: () ==> rat
 		getBalance() == (
 			return balance;
 		);
-	public getCity: () ==> String
+		
+	-- returns the user's city
+	pure public getCity: () ==> String
 		getCity() == (
 			return city;
 		);
-	public charge: rat ==> rat
+		
+	-- charges the user an amount
+	public charge: rat ==> ()
 		charge(amount) == (
 			balance := balance - amount;
-			return balance;
-		);
-	public deposit: rat ==> rat
+		)
+		pre amount < balance and amount > 0;
+		
+	-- deposits to the user's balance an amount
+	public deposit: rat ==> ()
 		deposit(amount) == (
 			balance := balance + amount;
-			return balance;
-		);		
+		)
+		pre amount > 0;
 			
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end User

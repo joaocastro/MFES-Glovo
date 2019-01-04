@@ -25,17 +25,19 @@ operations
 		);
 	
 	-- constructor with all paremeters
-	public Restaurant : String * String * String * String * Category ==> Restaurant
-		Restaurant (restaurantName, restaurantDescription, restaurantAddress, restaurantCity, restaurantCategory) == (
+	public Restaurant : String * String * String * String * rat * Category ==> Restaurant
+		Restaurant (restaurantName, restaurantDescription, restaurantAddress, restaurantCity, restaurantDeliveryPrice, restaurantCategory) == (
 			name := restaurantName;
 			description := restaurantDescription;
 			address := restaurantAddress;
 			city := restaurantCity;
+			deliveryPrice := restaurantDeliveryPrice;
 			category := restaurantCategory;
 			return self
 		)
 	pre len restaurantName > 0 and len restaurantDescription > 0 and len restaurantAddress > 0 and len restaurantCity > 0;
 
+	-- returns the restaurant's category
 	pure public getCategory : () ==> Category
 		getCategory () == (
 			return category;

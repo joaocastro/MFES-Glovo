@@ -10,7 +10,6 @@ types
 instance variables
 
 	private deliveryAddress: String := [];
-	private deliveryPrice: rat;
 	private deliveryTime: TimeStamp;
 	private items: seq of Item := [];
 	private user: User;
@@ -20,10 +19,9 @@ instance variables
 
 operations
 
-	public Order : String * rat * TimeStamp * seq of Item * User * Seller ==> Order
-		Order (orderDeliveryAddress, orderDeliveryPrice, orderDeliveryTime, orderItems, orderUser, orderSeller) == (
+	public Order : String * TimeStamp * seq of Item * User * Seller ==> Order
+		Order (orderDeliveryAddress, orderDeliveryTime, orderItems, orderUser, orderSeller) == (
 			deliveryAddress := orderDeliveryAddress;
-			deliveryPrice := orderDeliveryPrice;
 			deliveryTime := orderDeliveryTime;
 			items := orderItems;
 			user := orderUser;
@@ -31,9 +29,8 @@ operations
 			return self
 		)
 	pre len orderDeliveryAddress > 0 and 
-		orderDeliveryPrice > 0 and 
 		len orderItems > 0 and 
-		orderUser.getCity() = orderSeller.getCity() and
+		orderSeller.getCity() = orderUser.getCity()  and
 		forall item in set elems orderItems & item in set elems seller.getItems();
 
 	-- returns the order's delivery address
@@ -41,17 +38,11 @@ operations
 		getDeliveryAddress () == (
 			return deliveryAddress;
 	);
-
-	-- returns the order's delivery price
-	pure public getDeliveryPrice : () ==> rat
-		getDeliveryPrice () == (
-			return deliveryPrice;
-	);
 	
 	-- returns the order's total price
 	pure public getTotalPrice : () ==> rat
 		getTotalPrice () == (
-			dcl totalPrice : rat := deliveryPrice;
+			dcl totalPrice : rat := seller.getDeliveryPrice();
 			
 			for item in items do (
 				totalPrice := totalPrice + item.getPrice();
@@ -96,21 +87,25 @@ operations
 			return driver;
 	);
 	
-	public assignDriver : Driver ==> ()
-		assignDriver (assignee) == (
+	-- assigns a driver to the order and start's the delivery process
+	public startDelivery : Driver ==> ()
+		startDelivery (assignee) == (
 			driver := assignee;
+			driver.makeDelivering();
 			state := <delivering>;
 		)
-	pre state = <waiting> and 
+	pre state = <waiting> and
 		assignee.getCity() = user.getCity() and
 		assignee.getStatus() = <available>;
 	
+	-- finishes the delivery process
 	public finishDelivery : () ==> ()
 		finishDelivery () == (
 			user.charge(getTotalPrice());
 			driver.makeAvailable();
 			state := <delivered>;
 		)
-		
+	pre state = <delivering>
+	post driver.getStatus() = <available>;
 
 end Order
