@@ -1,14 +1,17 @@
 class Glovo
+
 types
--- TODO Define types here
-values
--- TODO Define values here
+	
+	public String = seq of char;
+
 instance variables
--- TODO Define instance variables here
+
+	private sellers: seq of Seller;
+	private drivers: seq of Driver;
+	private users: seq of User; 
+
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	
+
 end Glovo

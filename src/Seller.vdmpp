@@ -32,38 +32,38 @@ operations
 	pre len sellerName > 0 and len sellerDescription > 0 and len sellerAddress > 0 and len sellerCity > 0;
 	
 	-- returns the seller's name
-	pure public GetName : () ==> String
-		GetName () == (
+	pure public getName : () ==> String
+		getName () == (
 			return name;
 	);
 	
 	-- returns the seller's description
-	pure public GetDescription : () ==> String
-		GetDescription () == (
+	pure public getDescription : () ==> String
+		getDescription () == (
 			return description;
 	);
 	
 	-- returns the seller's address
-	pure public GetAddress : () ==> String
-		GetAddress () == (
+	pure public getAddress : () ==> String
+		getAddress () == (
 			return address;
 	);
 	
 	-- returns the seller's city
-	pure public GetCity : () ==> String
-		GetCity () == (
+	pure public getCity : () ==> String
+		getCity () == (
 			return city;
 	);
 	
 	-- returns the seller's items
-	pure public GetItems : () ==> seq of Item
-		GetItems () == (
+	pure public getItems : () ==> seq of Item
+		getItems () == (
 			return items;
 		);
 		
 	-- add items to seller
-	public AddItems : seq of Item ==> ()
-		AddItems(newItems) == (
+	public addItems : seq of Item ==> ()
+		addItems(newItems) == (
 			items := items ^ newItems;
 		);
 

@@ -36,8 +36,8 @@ operations
 		)
 	pre len restaurantName > 0 and len restaurantDescription > 0 and len restaurantAddress > 0 and len restaurantCity > 0;
 
-	pure public GetCategory : () ==> Category
-		GetCategory () == (
+	pure public getCategory : () ==> Category
+		getCategory () == (
 			return category;
 	);
 

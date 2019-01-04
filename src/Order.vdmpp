@@ -5,7 +5,7 @@ types
 	public String = seq of char;
 	public TimeStamp :: minutes : nat
 											seconds : nat;
-	public State = <processing> | <waiting> | <delivering> | <delivered>;
+	public State = <waiting> | <delivering> | <delivered>;
 
 instance variables
 
@@ -13,75 +13,104 @@ instance variables
 	private deliveryPrice: rat;
 	private deliveryTime: TimeStamp;
 	private items: seq of Item := [];
+	private user: User;
 	private seller: Seller;
-	private state: State := <processing>;
+	private state: State := <waiting>;
 	private driver: Driver;
 
 operations
 
-	public Order : String * rat * TimeStamp * seq of Item * Seller ==> Order
-		Order (orderDeliveryAddress, orderDeliveryPrice, orderDeliveryTime, orderItems, orderSeller) == (
+	public Order : String * rat * TimeStamp * seq of Item * User * Seller ==> Order
+		Order (orderDeliveryAddress, orderDeliveryPrice, orderDeliveryTime, orderItems, orderUser, orderSeller) == (
 			deliveryAddress := orderDeliveryAddress;
 			deliveryPrice := orderDeliveryPrice;
 			deliveryTime := orderDeliveryTime;
 			items := orderItems;
+			user := orderUser;
 			seller := orderSeller;
 			return self
 		)
-	pre len orderDeliveryAddress > 0 and orderDeliveryPrice > 0 and len orderItems > 0 and forall item in set elems orderItems & item in set elems seller.GetItems();
+	pre len orderDeliveryAddress > 0 and 
+		orderDeliveryPrice > 0 and 
+		len orderItems > 0 and 
+		orderUser.getCity() = orderSeller.getCity() and
+		forall item in set elems orderItems & item in set elems seller.getItems();
 
 	-- returns the order's delivery address
-	pure public GetDeliveryAddress : () ==> String
-		GetDeliveryAddress () == (
+	pure public getDeliveryAddress : () ==> String
+		getDeliveryAddress () == (
 			return deliveryAddress;
 	);
 
 	-- returns the order's delivery price
-	pure public GetDeliveryPrice : () ==> rat
-		GetDeliveryPrice () == (
+	pure public getDeliveryPrice : () ==> rat
+		getDeliveryPrice () == (
 			return deliveryPrice;
 	);
 	
 	-- returns the order's total price
-	pure public GetTotalPrice : () ==> rat
-		GetTotalPrice () == (
+	pure public getTotalPrice : () ==> rat
+		getTotalPrice () == (
 			dcl totalPrice : rat := deliveryPrice;
 			
 			for item in items do (
-				totalPrice := totalPrice + item.GetPrice();
+				totalPrice := totalPrice + item.getPrice();
 			);
 			
 			return totalPrice;
 	);
 	
 	-- returns the order's delivery time
-	pure public GetDeliveryTime : () ==> TimeStamp
-		GetDeliveryTime () == (
+	pure public getDeliveryTime : () ==> TimeStamp
+		getDeliveryTime () == (
 			return deliveryTime;
 	);
 	
 	-- returns the order's items
-	pure public GetItems : () ==> seq of Item
-		GetItems () == (
+	pure public getItems : () ==> seq of Item
+		getItems () == (
 			return items;
 	);
 	
 	-- returns the order's seller
-	pure public GetSeller : () ==> Seller
-		GetSeller () == (
+	pure public getSeller : () ==> Seller
+		getSeller () == (
 			return seller;
 	);
 	
+	-- returns the order's seller
+	pure public getUser : () ==> User
+		getUser () == (
+			return user;
+	);
+	
 	-- returns the order's state
-	pure public GetState : () ==> State
-		GetState () == (
+	pure public getState : () ==> State
+		getState () == (
 			return state;
 	);
 	
 	-- returns the order's driver
-	pure public GetDriver : () ==> Driver
-		GetDriver () == (
+	pure public getDriver : () ==> Driver
+		getDriver () == (
 			return driver;
 	);
+	
+	public assignDriver : Driver ==> ()
+		assignDriver (assignee) == (
+			driver := assignee;
+			state := <delivering>;
+		)
+	pre state = <waiting> and 
+		assignee.getCity() = user.getCity() and
+		assignee.getStatus() = <available>;
+	
+	public finishDelivery : () ==> ()
+		finishDelivery () == (
+			user.charge(getTotalPrice());
+			driver.makeAvailable();
+			state := <delivered>;
+		)
+		
 
 end Order

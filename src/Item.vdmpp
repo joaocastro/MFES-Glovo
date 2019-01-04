@@ -27,20 +27,20 @@ operations
 	pre len itemName > 0 and len itemInfo > 0 and itemPrice > 0;
 	
 	-- returns the seller's name
-	pure public GetName : () ==> String
-		GetName () == (
+	pure public getName : () ==> String
+		getName () == (
 			return name;
 	);
 	
 	-- returns the seller's description
-	pure public GetInfo : () ==> String
-		GetInfo () == (
+	pure public getInfo : () ==> String
+		getInfo () == (
 			return info;
 	);
 	
 	-- returns the seller's name
-	pure public GetPrice : () ==> rat
-		GetPrice () == (
+	pure public getPrice : () ==> rat
+		getPrice () == (
 			return price;
 	);
 

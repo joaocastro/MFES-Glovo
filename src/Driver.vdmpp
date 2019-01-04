@@ -1,14 +1,64 @@
 class Driver
+
 types
--- TODO Define types here
-values
--- TODO Define values here
+	
+	public String = seq of char;
+	public DriverStatus = <available> | <unavailable> | <delivering>;
+
 instance variables
--- TODO Define instance variables here
+
+	private name: String := [];
+	private city: String := [];
+	private status: DriverStatus := <available>;
+
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
+	-- constructor
+	public Driver : String * String ==> Driver
+		Driver (driverName, driverCity) == (
+			name := driverName;
+			city := driverCity;
+			return self
+		)
+	pre len driverName > 0 and len driverCity > 0;
+	
+	-- returns the driver's name
+	pure public getName : () ==> String
+		getName () == (
+			return name;
+	);
+	
+	-- returns the driver's city
+	pure public getCity : () ==> String
+		getCity () == (
+			return city;
+	);
+	
+	-- returns the driver's status
+	pure public getStatus : () ==> DriverStatus
+		getStatus () == (
+			return status;
+		);
+
+	-- sets the driver status as available
+	public makeAvailable : () ==> ()
+		makeAvailable () == (
+			status := <available>;
+		)
+		pre status <> <available>;
+	
+	-- sets the driver status as unavailable	
+	public makeUnavailable : () ==> ()
+		makeUnavailable () == (
+			status := <unavailable>;
+		)
+		pre status = <available>;
+	
+	-- sets the driver status as delivering	
+	public makeDelivering : () ==> ()
+		makeDelivering () == (
+			status := <delivering>;
+		)
+		pre status = <available>;
+
 end Driver

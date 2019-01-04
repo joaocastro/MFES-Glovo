@@ -33,8 +33,8 @@ operations
 		)
 	pre len storeName > 0 and len storeDescription > 0 and len storeAddress > 0 and len storeCity > 0;
 
-	pure public GetCategory : () ==> Category
-		GetCategory () == (
+	pure public getCategory : () ==> Category
+		getCategory () == (
 			return category;
 	);
 
