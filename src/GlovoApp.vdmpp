@@ -42,6 +42,17 @@ operations
 		getUsers () == (
 			return users;
 	);
+	
+	-- returns all the available users
+	pure public getUserByName : String ==> User
+		getUserByName (name) == (		
+			for user in users do (
+				if user.getName() = name then return user;
+			);
+			
+			return new User();
+		)
+		pre name in set { u.getName() | u in set elems users };
 
 	-- returns all the available orders
 	pure public getOrders : () ==> seq of Order

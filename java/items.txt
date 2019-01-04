@@ -1,0 +1,3 @@
+KFC;Menu Texas BBQ;1 Filete de frango marinado e panado, pão de sésamo, queijo, alface, molho BBQ, maiones, bacon e batata crocante;6.85
+KFC;Kentucky Fires;Batats rústicas com queijo e bacon;2.80
+KFC;Menu Dia;1 Sanduiche Krunch Bacon, 1 Pedaço de Franco, 2 Hot Wings, 1 bebida e batatas pequenas;5
