@@ -1,18 +1,49 @@
 class User
-	instance variables
-		protected name: seq of char;
+
+instance variables
+	private name: String := [];
+	private email: String := [];
+	private password: String := [];
+	private city: String := [];
+	private balance: rat := 0;
+	
 types
--- TODO Define types here
+	public String = seq of char;
 values
 -- TODO Define values here
 instance variables
 -- TODO Define instance variables here
 operations
-	public User: seq of char ==> User
-			User(n) == (
+	public User: String * String * String ==> User
+			User(n, e, p) == (
 				name:= n;
+				email:= e;
+				password := p;
 				return self;
 	);
+	public getName: () ==> String
+		getName() == (
+			return name;
+		);
+	public getBalance: () ==> rat
+		getBalance() == (
+			return balance;
+		);
+	public getCity: () ==> String
+		getCity() == (
+			return city;
+		);
+	public charge: rat ==> rat
+		charge(amount) == (
+			balance := balance - amount;
+			return balance;
+		);
+	public deposit: rat ==> rat
+		deposit(amount) == (
+			balance := balance + amount;
+			return balance;
+		);		
+			
 functions
 -- TODO Define functiones here
 traces
