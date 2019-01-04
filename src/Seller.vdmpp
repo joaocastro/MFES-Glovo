@@ -70,9 +70,9 @@ operations
 		);
 		
 	-- add items to seller
-	public addItems : seq of Item ==> ()
-		addItems(newItems) == (
-			items := items ^ newItems;
+	public addItem : Item ==> ()
+		addItem(newItem) == (
+			items := items ^ [newItem];
 		);
 
 end Seller

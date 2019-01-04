@@ -81,5 +81,12 @@ operations
 			if len availableDrivers > 0 then 
 				order.startDelivery(hd availableDrivers);
 		);
+		
+	public addItemToSeller : String * Item ==> ()
+		addItemToSeller (sellerName, item) == (
+			for seller in sellers do (
+				if seller.getName() = sellerName then seller.addItem(item);
+			)
+		);
 
 end GlovoApp
