@@ -90,18 +90,19 @@ operations
 	-- assigns a driver to the order and start's the delivery process
 	public startDelivery : Driver ==> ()
 		startDelivery (assignee) == (
+			user.charge(getTotalPrice());
 			driver := assignee;
 			driver.makeDelivering();
 			state := <delivering>;
 		)
 	pre state = <waiting> and
 		assignee.getCity() = user.getCity() and
-		assignee.getStatus() = <available>;
+		assignee.getStatus() = <available> and
+		user.getBalance() > getTotalPrice();
 	
 	-- finishes the delivery process
 	public finishDelivery : () ==> ()
 		finishDelivery () == (
-			user.charge(getTotalPrice());
 			driver.makeAvailable();
 			state := <delivered>;
 		)

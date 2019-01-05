@@ -92,6 +92,7 @@ public class Order {
 
   public void startDelivery(final Driver assignee) {
 
+    user.charge(getTotalPrice());
     driver = assignee;
     driver.makeDelivering();
     state = Glovo.quotes.deliveringQuote.getInstance();
@@ -99,7 +100,6 @@ public class Order {
 
   public void finishDelivery() {
 
-    user.charge(getTotalPrice());
     driver.makeAvailable();
     state = Glovo.quotes.deliveredQuote.getInstance();
   }
