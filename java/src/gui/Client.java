@@ -112,13 +112,27 @@ public class Client {
 
 		int option = reader.nextInt();
 		switch (option) {
-			case 1: break;
-			case 2: break;
+			case 1: dispatchOrder();
+					break;
+			case 2: resetOrder();
+					loggedMenu();
+					break;
 			case 0: main.menu();
 					break;
 			default: 
 				loggedMenu();
 		}
+	}
+	
+	private void dispatchOrder() {
+		if ((Float) this.order.getTotalPrice() > (Float) this.user.getBalance()) {
+			System.out.println("Not enough balance to dispatch order. Please add funds to your account.");
+		} else {
+			main.dispatchOrder(this.order);
+			resetOrder();
+			System.out.println("Order dispatched.");			
+		}
+		loggedMenu();
 	}
 	
 	private String formatItems(VDMSeq items) {

@@ -6,10 +6,10 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import org.overture.codegen.runtime.VDMSeq;
-
+import Glovo.Driver;
 import Glovo.GlovoApp;
 import Glovo.Item;
+import Glovo.Order;
 import Glovo.Restaurant;
 import Glovo.Store;
 import Glovo.User;
@@ -26,7 +26,6 @@ public class Main {
 	private Scanner reader;
 	private Client client;
 	private Admin admin;
-	
 
 	public static void main(String[] args) {
 		Main main = new Main();
@@ -40,6 +39,7 @@ public class Main {
 			System.out.println("Error opening data file.");
 		}
 		
+		triggerDelivery();
 		menu();
 	}
 	
@@ -61,14 +61,22 @@ public class Main {
 	}
 	
 	private void init() throws IOException {
-		reader = new Scanner(System.in);
-		app = new GlovoApp();
-		client = new Client(app, reader, this);
-		admin = new Admin(app, reader, this);
+		this.reader = new Scanner(System.in);
+		this.app = new GlovoApp();
+		this.client = new Client(app, reader, this);
+		this.admin = new Admin(app, reader, this);
 		
 		initSellers();
 		initUsers();
+		initDrivers();
 		readItems();
+	}
+	
+	private void initDrivers() {
+		app.addDriver(new Driver("João Costa", "Porto"));
+		app.addDriver(new Driver("Matilde Andrade", "Porto"));
+		app.addDriver(new Driver("José António", "Porto"));
+		app.addDriver(new Driver("Manuel Carreiro", "Porto"));
 	}
 	
 	private void initUsers() {
@@ -92,6 +100,21 @@ public class Main {
 	        	String[] args = line.split(";");
 	    		app.addItemToSeller(args[0], new Item(args[1], args[2], Float.parseFloat(args[3])));
 	    	});
+		}
+	}
+
+	public void dispatchOrder(Order order) {
+		if(app.addOrder(order)) {
+			Delivery delivery = new Delivery(order, this);
+			delivery.start();
+		}
+	}
+	
+	public void triggerDelivery() {
+		Order order = app.triggerWaitingOrder();
+		if (order != null) {
+			Delivery delivery = new Delivery(order, this);
+			delivery.start();
 		}
 	}
 }

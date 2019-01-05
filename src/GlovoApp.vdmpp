@@ -36,13 +36,13 @@ operations
 			return drivers;
 	);
 	
-	-- returns all the available drivers
-	pure public getAvailableDrivers : () ==> seq of Driver
-		getAvailableDrivers () == (
+	-- returns all the available drivers in city
+	pure public getAvailableDriversByCity : String ==> seq of Driver
+		getAvailableDriversByCity (city) == (
 			dcl availableDrivers : seq of Driver := [];
 			
 			for driver in drivers do (
-				if driver.getStatus() = <available> then
+				if driver.getStatus() = <available> and driver.getCity() = city then
 					availableDrivers := availableDrivers ^ [driver];
 			);
 			
@@ -72,6 +72,18 @@ operations
 			return orders;
 	);
 	
+	-- returns all the available orders
+	pure public getWaitingOrders : () ==> seq of Order
+		getWaitingOrders () == (
+			dcl waitingOrders : seq of Order := [];
+			
+			for order in orders do (
+				if order.getState() = <waiting> then waitingOrders := waitingOrders ^ [order];
+			);
+			
+			return orders;
+	);
+	
 	-- adds a seller to Glovo
 	public addSeller : Seller ==> ()
 		addSeller (newSeller) == (
@@ -94,16 +106,38 @@ operations
 		pre forall user in set elems users & user.getName() <> newUser.getName();
 		
 	-- makes a new order
-	public addOrder : Order ==> ()
+	public addOrder : Order ==> bool
 		addOrder (order) == (			
 			dcl availableDrivers : seq of Driver;
 
 			orders := orders ^ [order];
 			
-			availableDrivers := getAvailableDrivers();
-			if len availableDrivers > 0 then 
+			availableDrivers := getAvailableDriversByCity(order.getUser().getCity());
+			if len availableDrivers > 0 then (
 				order.startDelivery(hd availableDrivers);
+				return true
+			);
+			
+			return false;	
 		);
+		
+	public triggerWaitingOrder : () ==> Order
+		triggerWaitingOrder () == (
+			dcl order : Order;
+			dcl availableDrivers : seq of Driver;
+			
+			if len getWaitingOrders() > 0 then (
+				order := hd getWaitingOrders();
+				
+				availableDrivers := getAvailableDriversByCity(order.getUser().getCity());
+				if len availableDrivers > 0 then (
+					order.startDelivery(hd availableDrivers);
+				);			
+			);
+
+			return order;
+		)
+		pre len getWaitingOrders() > 0 and len getAvailableDriversByCity((hd getWaitingOrders()).getUser().getCity()) > 0;
 		
 	-- adds an item to a seller by name
 	public addItemToSeller : String * Item ==> ()
