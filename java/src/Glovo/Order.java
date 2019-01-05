@@ -51,8 +51,8 @@ public class Order {
   public Number getTotalPrice() {
 
     Number totalPrice = seller.getDeliveryPrice();
-    for (Iterator iterator_6 = items.iterator(); iterator_6.hasNext(); ) {
-      Item item = (Item) iterator_6.next();
+    for (Iterator iterator_15 = items.iterator(); iterator_15.hasNext(); ) {
+      Item item = (Item) iterator_15.next();
       {
         totalPrice = totalPrice.doubleValue() + item.getPrice().doubleValue();
       }

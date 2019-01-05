@@ -15,6 +15,19 @@ public class GlovoApp {
     return Utils.copy(sellers);
   }
 
+  public Seller getSellerByName(final String name) {
+
+    for (Iterator iterator_9 = sellers.iterator(); iterator_9.hasNext(); ) {
+      Seller seller = (Seller) iterator_9.next();
+      {
+        if (Utils.equals(seller.getName(), name)) {
+          return seller;
+        }
+      }
+    }
+    return new Seller();
+  }
+
   public VDMSeq getDrivers() {
 
     return Utils.copy(drivers);
@@ -23,8 +36,8 @@ public class GlovoApp {
   public VDMSeq getAvailableDrivers() {
 
     VDMSeq availableDrivers = SeqUtil.seq();
-    for (Iterator iterator_7 = drivers.iterator(); iterator_7.hasNext(); ) {
-      Driver driver = (Driver) iterator_7.next();
+    for (Iterator iterator_10 = drivers.iterator(); iterator_10.hasNext(); ) {
+      Driver driver = (Driver) iterator_10.next();
       {
         if (Utils.equals(driver.getStatus(), Glovo.quotes.availableQuote.getInstance())) {
           availableDrivers = SeqUtil.conc(Utils.copy(availableDrivers), SeqUtil.seq(driver));
@@ -41,8 +54,8 @@ public class GlovoApp {
 
   public User getUserByName(final String name) {
 
-    for (Iterator iterator_8 = users.iterator(); iterator_8.hasNext(); ) {
-      User user = (User) iterator_8.next();
+    for (Iterator iterator_11 = users.iterator(); iterator_11.hasNext(); ) {
+      User user = (User) iterator_11.next();
       {
         if (Utils.equals(user.getName(), name)) {
           return user;
@@ -84,14 +97,54 @@ public class GlovoApp {
 
   public void addItemToSeller(final String sellerName, final Item item) {
 
-    for (Iterator iterator_9 = sellers.iterator(); iterator_9.hasNext(); ) {
-      Seller seller = (Seller) iterator_9.next();
+    for (Iterator iterator_12 = sellers.iterator(); iterator_12.hasNext(); ) {
+      Seller seller = (Seller) iterator_12.next();
       {
         if (Utils.equals(seller.getName(), sellerName)) {
           seller.addItem(item);
         }
       }
     }
+  }
+
+  public VDMSeq getRestaurantsByCity(final String city) {
+
+    VDMSeq restaurants = SeqUtil.seq();
+    for (Iterator iterator_13 = sellers.iterator(); iterator_13.hasNext(); ) {
+      Seller seller = (Seller) iterator_13.next();
+      Boolean andResult_2 = false;
+
+      if (Utils.is_(seller, Restaurant.class)) {
+        if (Utils.equals(seller.getCity(), city)) {
+          andResult_2 = true;
+        }
+      }
+
+      if (andResult_2) {
+        restaurants = SeqUtil.conc(Utils.copy(restaurants), SeqUtil.seq(seller));
+      }
+    }
+    return Utils.copy(restaurants);
+  }
+
+  public VDMSeq getStoresByCity(final String city) {
+
+    VDMSeq stores = SeqUtil.seq();
+    for (Iterator iterator_14 = sellers.iterator(); iterator_14.hasNext(); ) {
+      Seller seller = (Seller) iterator_14.next();
+      Boolean andResult_3 = false;
+
+      if (Utils.is_(seller, Store.class)) {
+        if (Utils.equals(seller.getCity(), city)) {
+          andResult_3 = true;
+        }
+      }
+
+      if (andResult_3) {
+        stores = SeqUtil.conc(Utils.copy(stores), SeqUtil.seq(seller));
+      }
+    }
+    return Utils.copy(stores);
   }
 
   public GlovoApp() {}

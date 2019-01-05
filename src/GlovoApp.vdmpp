@@ -19,12 +19,24 @@ operations
 			return sellers;
 	);
 	
-	-- returns all the available drivers
+	-- returns a seller by name
+	pure public getSellerByName : String ==> Seller
+		getSellerByName (name) == (		
+			for seller in sellers do (
+				if seller.getName() = name then return seller;
+			);
+			
+			return new Seller();
+		)
+		pre name in set { s.getName() | s in set elems sellers };
+	
+	-- returns all the drivers
 	pure public getDrivers : () ==> seq of Driver
 		getDrivers () == (
 			return drivers;
 	);
 	
+	-- returns all the available drivers
 	pure public getAvailableDrivers : () ==> seq of Driver
 		getAvailableDrivers () == (
 			dcl availableDrivers : seq of Driver := [];
@@ -37,13 +49,13 @@ operations
 			return availableDrivers;
 		);
 	
-	-- returns all the available users
+	-- returns all the users
 	pure public getUsers : () ==> seq of User
 		getUsers () == (
 			return users;
 	);
 	
-	-- returns all the available users
+	-- returns a user by name
 	pure public getUserByName : String ==> User
 		getUserByName (name) == (		
 			for user in users do (
@@ -93,11 +105,38 @@ operations
 				order.startDelivery(hd availableDrivers);
 		);
 		
+	-- adds an item to a seller by name
 	public addItemToSeller : String * Item ==> ()
 		addItemToSeller (sellerName, item) == (
 			for seller in sellers do (
 				if seller.getName() = sellerName then seller.addItem(item);
 			)
 		);
+		
+	-- returns all restaurants in a city
+	public getRestaurantsByCity : String ==> seq of Restaurant
+		getRestaurantsByCity(city) == (
+			dcl restaurants : seq of Restaurant := [];
+		
+			for seller in sellers do (
+					if is_(seller, Restaurant) and seller.getCity() = city then restaurants := restaurants ^ [seller];
+			);
+			
+			return restaurants;
+		)
+		post forall restaurant in set elems RESULT & is_(restaurant, Restaurant);
+		
+	-- returns all stores in a city
+	public getStoresByCity : String ==> seq of Store
+		getStoresByCity(city) == (
+			dcl stores : seq of Store := [];
+		
+			for seller in sellers do (
+					if is_(seller, Store) and seller.getCity() = city then stores := stores ^ [seller];
+			);
+			
+			return stores;
+		)
+		post forall store in set elems RESULT & is_(store, Restaurant);
 
 end GlovoApp

@@ -1,55 +1,48 @@
 package gui;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Random;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
+import org.overture.codegen.runtime.SeqUtil;
+import org.overture.codegen.runtime.Utils;
 import org.overture.codegen.runtime.VDMSeq;
 
 import Glovo.GlovoApp;
 import Glovo.Item;
-import Glovo.Restaurant;
+import Glovo.Order;
+import Glovo.Order.TimeStamp;
 import Glovo.User;
-import Glovo.quotes.AsiaticaQuote;
-import Glovo.quotes.Fast_FoodQuote;
-import Glovo.quotes.InternacionalQuote;
-import Glovo.quotes.ItalianaQuote;
-import Glovo.quotes.JaponesaQuote;
+import Glovo.Restaurant;
+import Glovo.Seller;
+import Glovo.Store;
 
 public class Client {
 	
-	private static GlovoApp app;
-	private static Scanner reader;
+	private Scanner reader;
+	private GlovoApp app;
+	private Main main;
+	private boolean loggedIn = false;
+	private User user;
+
+	private VDMSeq orderItems = SeqUtil.seq();
+	private String orderSeller = "";
+	private String orderAddress = "";
+	
+	private Order order;
 	
 
-	public static void main(String[] args) {
-		try {
-			init();
-		} catch (IOException e) {
-			System.out.println("Error opening data file.");
-		}
-		
-		printMainMenu();
+	Client (GlovoApp a, Scanner r, Main m) {
+		app = a;
+		reader = r;
+		main = m;
 	}
 	
-	static private void printMainMenu() {
-		System.out.println("=== Glovo ===\n"
-				+ "   1. Client area\n"
-				+ "   2. Admin area\n"
-				+ "Choose an option: ");
-
-		int option = reader.nextInt();
-		switch (option) {
-			case 1: printClientArea();
-					break;
-			case 2: printAdminArea();
-					break;
-		}
+	public void menu() {
+		if (loggedIn) loggedMenu();
+		else loginMenu();
 	}
 	
-	static private void printClientArea() {
+	private void loginMenu() {
 		System.out.println("=== Client area ===\n"
 				+ "   1. Login\n"
 				+ "   2. Register\n"
@@ -62,27 +55,112 @@ public class Client {
 					break;
 			case 2: register();
 					break;
-			case 0: printMainMenu();
+			case 0: main.menu();
 					return;
 		}
-		
-		printClientArea();
 	}
 	
-	static private void login() {
+	private void loggedMenu() {
+		String hasOrderOption = this.orderItems.isEmpty() ? "" : "4. Order Details\n";
+		
+		System.out.println("=== Welcome " + user.getName() + "! ===\n"
+				+ "Balance: " + user.getBalance() + "€\n"
+				+ "---------------\n"
+				+ "1. Make deposit\n"
+				+ "2. Stores\n"
+				+ "3. Restaurants\n"
+				+ hasOrderOption
+				+ "0. Back\n"
+				+ "Choose an option: ");
+
+		int option = reader.nextInt();
+		switch (option) {
+			case 1: makeDeposit();
+					break;
+			case 2: listStores();
+					break;
+			case 3: listRestaurants();
+					break;
+			case 4: if(this.orderItems.isEmpty()) loggedMenu();
+					else orderOptions();
+					break;
+			case 0: main.menu();
+					break;
+			default: 
+				loggedMenu();
+		}
+	}
+	
+	private void orderOptions() {
+		Random rand = new Random();
+		
+		if(this.orderAddress.isEmpty()) promptAddress();
+		if (this.order == null) this.order = new Order(this.orderAddress, new TimeStamp(rand.nextInt(30) + 1, rand.nextInt(4) * 15), this.orderItems, this.user, app.getSellerByName(this.orderSeller));
+				
+		System.out.println("=== Order information ===\n"
+				+ "Delivery Time: " + String.format("%02dm %02ds\n", this.order.getDeliveryTime().minutes, this.order.getDeliveryTime().seconds)
+				+ String.format("Cost: %.2f€\n", this.order.getTotalPrice())
+				+ "Seller: " + this.order.getSeller().getName() + "\n"
+				+ "Address: " + this.order.getDeliveryAddress() + "\n"		
+				+ "Items: \n"
+				+ formatItems(this.order.getItems())
+				+ "---------------\n"
+				+ "1. Confirm order\n"
+				+ "2. Cancel order\n"
+				+ "0. Back\n"
+				+ "Choose an option: ");
+
+		int option = reader.nextInt();
+		switch (option) {
+			case 1: break;
+			case 2: break;
+			case 0: main.menu();
+					break;
+			default: 
+				loggedMenu();
+		}
+	}
+	
+	private String formatItems(VDMSeq items) {
+		String formatedItems = "";
+		for (int i = 0; i < items.size(); i++) {
+			Item item = (Item) items.get(i);
+			formatedItems += "   - " + item.getName() + " - " + item.getPrice() + "€\n      " + item.getInfo() + "\n";
+		}
+		return formatedItems;
+	}
+	
+	private void promptAddress() {
+		System.out.println("Enter address for order:");
+
+		this.orderAddress = reader.nextLine();
+	}
+	
+	private void makeDeposit() {
+		System.out.println("Enter amount to deposit:");
+
+		float amount = Float.parseFloat(reader.next());
+		user.deposit(amount);
+		System.out.println("Amount deposited");
+	};
+	
+	private void login() {
 		System.out.println("=== Login ===\n"
 				+ "Username: ");
 
 		String username = reader.next();
-		if(!((User) app.getUserByName(username)).getName().isEmpty())
-			System.out.println("Logged in");
+		if(!((User) app.getUserByName(username)).getName().isEmpty()) {
+			this.loggedIn = true;
+			this.user = (User) app.getUserByName(username);
+			loggedMenu();
+		}
 		else {
 			System.out.println("User not found. Redirecting to register");
 			register();
 		}
 	}
 	
-	static private void register() {
+	private void register() {
 		System.out.println("=== Register ===\n"
 				+ "Username: ");
 
@@ -95,60 +173,102 @@ public class Client {
 			System.out.println("City");
 			String city = reader.next();
 			app.registerUser(new User(username, city));
+			this.user = (User) app.getUserByName(username);
+			this.loggedIn = true;
+			loggedMenu();
 		}
 	}
 	
-	static private void printAdminArea() {
-		System.out.println("=== Admin area ===\n"
-				+ "   1. List all users\n"
-				+ "   0. Back\n"
-				+ "Choose an option: ");
-
+	private void listRestaurants() {
+		VDMSeq restaurants = app.getRestaurantsByCity(user.getCity());
+		System.out.println("Here are all the options in your area.\n"
+				+ "Choose an option:");
+		for (int i = 0; i < restaurants.size(); i++) {
+			Restaurant restaurant = (Restaurant) restaurants.get(i);
+			System.out.println((i + 1) + ". " + restaurant.getName() + " - " + formatQuote(restaurant.getCategory()));
+		}
+		System.out.println("0. Back");
+		
 		int option = reader.nextInt();
-		switch (option) {
-			case 1: listAllUsers();
-					break;
-			case 0: printMainMenu();
-					return;
+		switch(option) {
+			case 0: loggedMenu();
+			default: restaurantPage(option - 1);
 		}
+	}
+	
+	private void listStores() {
+		VDMSeq stores = app.getStoresByCity(user.getCity());
+		System.out.println("Here are all the options in your area.\n"
+				+ "Choose an option:");
+		for (int i = 0; i < stores.size(); i++) {
+			Store store = (Store) stores.get(i);
+			System.out.println((i + 1) + ". " + store.getName() + " - " + formatQuote(store.getCategory()));
+		}
+		System.out.println("0. Back");
 		
-		printAdminArea();
-	}
-	
-	static private void listAllUsers() {
-		System.out.println("=== Users ===");
-		VDMSeq users = app.getUsers();
-		for (int i = 0; i < users.size(); i++) {
-			User user = (User) users.get(i);
-			System.out.println("   " + i + " | " + user.getName() + " | " + user.getCity() + " | " + user.getBalance() + "€");
+		int option = reader.nextInt();
+		switch(option) {
+			case 0: loggedMenu();
+			default: storePage(option - 1);
 		}
 	}
 	
-	static private void init() throws IOException {
-		reader = new Scanner(System.in);
-		app = new GlovoApp();
+	private void restaurantPage(int index) {
+		Restaurant restaurant = (Restaurant) app.getRestaurantsByCity(user.getCity()).get(index);
+		if (!this.orderSeller.equals(restaurant.getName())) resetOrder();
 		
-		initSellers();
-		readItems();
-	}
-	
-	static private void initSellers() {
-		app.addSeller(new Restaurant("KFC", "Restaurante de Frango", "Rua Palmeiras, 51", "Porto", 2.5, new Fast_FoodQuote()));
-		app.addSeller(new Restaurant("Pizza Hut", "Pizzaria", "Rua da Escola, 46", "Porto", 2.5, new Fast_FoodQuote()));
-		app.addSeller(new Restaurant("Boa-Bao", "Cozinha pan-asiática", "Rua da Picaria 61-65", "Porto", 2.9, new AsiaticaQuote()));
-		app.addSeller(new Restaurant("Munchie", "The Burger kitchen", "Praça D. Filipa de Lencastre 177", "Porto", 1.8, new Fast_FoodQuote()));
-		app.addSeller(new Restaurant("Tapas N'Friends", "Sharing food", "Praça Guilherme Gomes Fernandes nº 37/39", "Porto", 1.9, new InternacionalQuote()));
-		app.addSeller(new Restaurant("Temaki d'Lux", "Especialista em comida japonesa", "R. Preciosa 21", "Porto", 4, new JaponesaQuote()));
-		app.addSeller(new Restaurant("La Piadona", "Piadinhas de alta qualidade", "R. de Santa Teresa 4", "Porto", 2.5, new ItalianaQuote()));
-	}
-	
-	static private void readItems() throws IOException {
-		try (Stream<String> stream = Files.lines(Paths.get("items.txt"))) {
-	        stream.forEach(line-> {
-	        	String[] args = line.split(";");
-	    		app.addItemToSeller(args[0], new Item(args[1], args[2], Float.parseFloat(args[3])));
-	    	});
+		printSellerInfo(restaurant);
+		
+		int option = reader.nextInt();
+		switch(option) {
+			case 0: listRestaurants();
+			default: if(restaurant.getItems().get(option - 1) != null) {
+				this.orderItems = SeqUtil.conc(Utils.copy(this.orderItems), SeqUtil.seq(restaurant.getItems().get(option - 1)));
+				this.orderSeller = restaurant.getName();
+				System.out.println("Item added to order.");
+				restaurantPage(index);
+			}
 		}
 	}
-
+	
+	private void storePage(int index) {
+		Store store = (Store) app.getStoresByCity(user.getCity()).get(index);
+		if (!this.orderSeller.equals(store.getName())) resetOrder();
+		
+		printSellerInfo(store);
+		
+		int option = reader.nextInt();
+		switch(option) {
+			case 0: listStores();
+			default: if(store.getItems().get(option - 1) != null) {
+				this.orderItems = SeqUtil.conc(Utils.copy(this.orderItems), SeqUtil.seq(store.getItems().get(option - 1)));
+				this.orderSeller = store.getName();
+				System.out.println("Item added to order.");
+				storePage(index);
+			}
+		}
+	}
+	
+	private void printSellerInfo(Seller seller) {
+		System.out.println("== " + seller.getName() + " ==\n"
+				+ "Description: " + seller.getDescription() + "\n"
+				+ "Address: " + seller.getAddress() + "\n"
+				+ "Items:");
+		for (int i = 0; i < seller.getItems().size(); i++) {
+			Item item = (Item) seller.getItems().get(i);
+			System.out.println((i + 1) + ". " + item.getName() + " - " + item.getPrice() + "€\n"
+					+ "   " + item.getInfo());
+		}
+		System.out.println("0. Back");
+	}
+	
+	private void resetOrder() {
+		this.orderItems.clear();
+		this.orderSeller = "";
+		this.order = null;
+	}
+	
+	private String formatQuote(Object quote) {
+		return quote.toString().replace("_", " ").replace("<", "").replace(">", "");
+	}
 }
