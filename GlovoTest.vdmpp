@@ -1,20 +1,15 @@
 class GlovoTest
-types
-	public TimeStamp :: minutes : nat
-											seconds : nat;
-values
--- TODO Define values here
+
 instance variables
+
 	private time : Order`TimeStamp := mk_Order`TimeStamp(5,10);
-	
-	driTest1:Driver := new Driver("Luis","Porto");
-	userTest1:User := new User("Manuel", "Porto");
-	itemTest1:Item := new Item("Caneta","Caneta para escrita",1);
-	restTest1:Restaurant := new Restaurant("McDonalds","cadeia mundial de restaurantes de fast food","Aliados","Porto",5,<Fast_Food>);
-	storeTest1:Store := new Store("FNAC","cadeia de lojas","NorteShopping","Porto",4, <Electronica>);
-	sellerTest1:Seller := new Seller("Rui","Teste","FEUP","Porto",4);
-	-- orderTest1:Order := new Order("Rua da FEUP",time,items,userTest1,sellerTest1);
-	private items: seq of Item := [itemTest1];
+	private driTest1 : Driver := new Driver("Luis","Porto");
+	private userTest1 : User := new User("Manuel", "Porto");
+	private itemTest1 : Item := new Item("Caneta","Caneta para escrita",1);
+	private items : seq of Item := [itemTest1];
+	private restTest1 : Restaurant := new Restaurant("McDonalds","cadeia mundial de restaurantes de fast food","Aliados","Porto",5,<Fast_Food>);
+	private storeTest1 : Store := new Store("FNAC","cadeia de lojas","NorteShopping","Porto",4, <Electronica>);
+	private sellerTest1 : Seller := new Seller("Rui", "Teste", "FEUP", "Porto", 4);
 	
 operations
 	private assertTrue: bool ==> ()
@@ -85,7 +80,13 @@ operations
 	);
 	
 	private testOrder() == (
-		sellerTest1.addItem(itemTest1);
+		
+		dcl orderTest1 : Order;
+		dcl restaurant : Restaurant := new Restaurant("McDonalds", "Cadeia mundial de restaurantes de fast food", "Aliados", "Porto", 5, <Fast_Food>);
+		dcl item : Item := new Item("BigMac", "Hamburger classico", 3.45);
+		restaurant.addItem(item);
+		orderTest1 := new Order("Rua da FEUP", time, [item], userTest1, restaurant);
+		
 	);
 	
 	public static main: () ==> ()
@@ -97,12 +98,7 @@ operations
     	new GlovoTest().testRestaurant();
     	new GlovoTest().testSeller();
     	new GlovoTest().testStore();
-    	
-    	-- new GlovoTest().testOrder();
+    	new GlovoTest().testOrder();
 	);
-		
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+
 end GlovoTest

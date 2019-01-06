@@ -32,8 +32,8 @@ operations
 		)
 	pre len orderDeliveryAddress > 0 and 
 		len orderItems > 0 and 
-		orderSeller.getCity() = orderUser.getCity()  and
-		forall item in set elems orderItems & item in set elems seller.getItems();
+		orderSeller.getCity() = orderUser.getCity() and
+		forall item in set elems orderItems & item in set { i | i in set elems orderSeller.getItems()};
 
 	-- returns the order's delivery address
 	pure public getDeliveryAddress : () ==> String
