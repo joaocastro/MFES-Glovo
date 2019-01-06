@@ -10,6 +10,16 @@ public class GlovoApp {
   private VDMSeq users = SeqUtil.seq();
   private VDMSeq orders = SeqUtil.seq();
 
+  public void cg_init_GlovoApp_1() {
+
+    return;
+  }
+
+  public GlovoApp() {
+
+    cg_init_GlovoApp_1();
+  }
+
   public VDMSeq getSellers() {
 
     return Utils.copy(sellers);
@@ -17,15 +27,16 @@ public class GlovoApp {
 
   public Seller getSellerByName(final String name) {
 
-    for (Iterator iterator_10 = sellers.iterator(); iterator_10.hasNext(); ) {
-      Seller seller = (Seller) iterator_10.next();
+    Seller seller = null;
+    for (Iterator iterator_9 = sellers.iterator(); iterator_9.hasNext(); ) {
+      Seller s = (Seller) iterator_9.next();
       {
-        if (Utils.equals(seller.getName(), name)) {
-          return seller;
+        if (Utils.equals(s.getName(), name)) {
+          seller = s;
         }
       }
     }
-    return new Seller();
+    return seller;
   }
 
   public VDMSeq getDrivers() {
@@ -36,8 +47,8 @@ public class GlovoApp {
   public VDMSeq getAvailableDriversByCity(final String city) {
 
     VDMSeq availableDrivers = SeqUtil.seq();
-    for (Iterator iterator_11 = drivers.iterator(); iterator_11.hasNext(); ) {
-      Driver driver = (Driver) iterator_11.next();
+    for (Iterator iterator_10 = drivers.iterator(); iterator_10.hasNext(); ) {
+      Driver driver = (Driver) iterator_10.next();
       Boolean andResult_2 = false;
 
       if (Utils.equals(driver.getStatus(), Glovo.quotes.availableQuote.getInstance())) {
@@ -60,15 +71,16 @@ public class GlovoApp {
 
   public User getUserByName(final String name) {
 
-    for (Iterator iterator_12 = users.iterator(); iterator_12.hasNext(); ) {
-      User user = (User) iterator_12.next();
+    User user = null;
+    for (Iterator iterator_11 = users.iterator(); iterator_11.hasNext(); ) {
+      User u = (User) iterator_11.next();
       {
-        if (Utils.equals(user.getName(), name)) {
-          return user;
+        if (Utils.equals(u.getName(), name)) {
+          user = u;
         }
       }
     }
-    return new User();
+    return user;
   }
 
   public VDMSeq getOrders() {
@@ -79,8 +91,8 @@ public class GlovoApp {
   public VDMSeq getWaitingOrders() {
 
     VDMSeq waitingOrders = SeqUtil.seq();
-    for (Iterator iterator_13 = orders.iterator(); iterator_13.hasNext(); ) {
-      Order order = (Order) iterator_13.next();
+    for (Iterator iterator_12 = orders.iterator(); iterator_12.hasNext(); ) {
+      Order order = (Order) iterator_12.next();
       {
         if (Utils.equals(order.getState(), Glovo.quotes.waitingQuote.getInstance())) {
           waitingOrders = SeqUtil.conc(Utils.copy(waitingOrders), SeqUtil.seq(order));
@@ -135,8 +147,8 @@ public class GlovoApp {
 
   public void addItemToSeller(final String sellerName, final Item item) {
 
-    for (Iterator iterator_14 = sellers.iterator(); iterator_14.hasNext(); ) {
-      Seller seller = (Seller) iterator_14.next();
+    for (Iterator iterator_13 = sellers.iterator(); iterator_13.hasNext(); ) {
+      Seller seller = (Seller) iterator_13.next();
       {
         if (Utils.equals(seller.getName(), sellerName)) {
           seller.addItem(item);
@@ -148,8 +160,8 @@ public class GlovoApp {
   public VDMSeq getRestaurantsByCity(final String city) {
 
     VDMSeq restaurants = SeqUtil.seq();
-    for (Iterator iterator_15 = sellers.iterator(); iterator_15.hasNext(); ) {
-      Seller seller = (Seller) iterator_15.next();
+    for (Iterator iterator_14 = sellers.iterator(); iterator_14.hasNext(); ) {
+      Seller seller = (Seller) iterator_14.next();
       Boolean andResult_4 = false;
 
       if (Utils.is_(seller, Restaurant.class)) {
@@ -168,8 +180,8 @@ public class GlovoApp {
   public VDMSeq getStoresByCity(final String city) {
 
     VDMSeq stores = SeqUtil.seq();
-    for (Iterator iterator_16 = sellers.iterator(); iterator_16.hasNext(); ) {
-      Seller seller = (Seller) iterator_16.next();
+    for (Iterator iterator_15 = sellers.iterator(); iterator_15.hasNext(); ) {
+      Seller seller = (Seller) iterator_15.next();
       Boolean andResult_5 = false;
 
       if (Utils.is_(seller, Store.class)) {
@@ -184,8 +196,6 @@ public class GlovoApp {
     }
     return Utils.copy(stores);
   }
-
-  public GlovoApp() {}
 
   public String toString() {
 

@@ -12,7 +12,7 @@ public class Seller {
   protected VDMSeq items = SeqUtil.seq();
   protected Number deliveryPrice = 0L;
 
-  public void cg_init_Seller_2(
+  public void cg_init_Seller_1(
       final String sellerName,
       final String sellerDescription,
       final String sellerAddress,
@@ -27,16 +27,6 @@ public class Seller {
     return;
   }
 
-  public void cg_init_Seller_1() {
-
-    return;
-  }
-
-  public Seller() {
-
-    cg_init_Seller_1();
-  }
-
   public Seller(
       final String sellerName,
       final String sellerDescription,
@@ -44,7 +34,7 @@ public class Seller {
       final String sellerCity,
       final Number sellerDeliveryPrice) {
 
-    cg_init_Seller_2(sellerName, sellerDescription, sellerAddress, sellerCity, sellerDeliveryPrice);
+    cg_init_Seller_1(sellerName, sellerDescription, sellerAddress, sellerCity, sellerDeliveryPrice);
   }
 
   public String getName() {
@@ -81,6 +71,8 @@ public class Seller {
 
     items = SeqUtil.conc(Utils.copy(items), SeqUtil.seq(newItem));
   }
+
+  public Seller() {}
 
   public String toString() {
 

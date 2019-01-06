@@ -9,7 +9,7 @@ public class Item {
   private String info = SeqUtil.toStr(SeqUtil.seq());
   private Number price;
 
-  public void cg_init_Item_2(final String itemName, final String itemInfo, final Number itemPrice) {
+  public void cg_init_Item_1(final String itemName, final String itemInfo, final Number itemPrice) {
 
     name = itemName;
     info = itemInfo;
@@ -17,19 +17,9 @@ public class Item {
     return;
   }
 
-  public void cg_init_Item_1() {
-
-    return;
-  }
-
-  public Item() {
-
-    cg_init_Item_1();
-  }
-
   public Item(final String itemName, final String itemInfo, final Number itemPrice) {
 
-    cg_init_Item_2(itemName, itemInfo, itemPrice);
+    cg_init_Item_1(itemName, itemInfo, itemPrice);
   }
 
   public String getName() {
@@ -46,6 +36,8 @@ public class Item {
 
     return price;
   }
+
+  public Item() {}
 
   public String toString() {
 

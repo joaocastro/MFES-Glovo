@@ -7,7 +7,7 @@ import org.overture.codegen.runtime.*;
 public class Restaurant extends Seller {
   private Object category;
 
-  public void cg_init_Restaurant_2(
+  public void cg_init_Restaurant_1(
       final String restaurantName,
       final String restaurantDescription,
       final String restaurantAddress,
@@ -24,16 +24,6 @@ public class Restaurant extends Seller {
     return;
   }
 
-  public void cg_init_Restaurant_1() {
-
-    return;
-  }
-
-  public Restaurant() {
-
-    cg_init_Restaurant_1();
-  }
-
   public Restaurant(
       final String restaurantName,
       final String restaurantDescription,
@@ -42,7 +32,7 @@ public class Restaurant extends Seller {
       final Number restaurantDeliveryPrice,
       final Object restaurantCategory) {
 
-    cg_init_Restaurant_2(
+    cg_init_Restaurant_1(
         restaurantName,
         restaurantDescription,
         restaurantAddress,
@@ -55,6 +45,8 @@ public class Restaurant extends Seller {
 
     return category;
   }
+
+  public Restaurant() {}
 
   public String toString() {
 

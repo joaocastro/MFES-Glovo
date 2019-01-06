@@ -7,7 +7,7 @@ import org.overture.codegen.runtime.*;
 public class Store extends Seller {
   private Object category;
 
-  public void cg_init_Store_2(
+  public void cg_init_Store_1(
       final String storeName,
       final String storeDescription,
       final String storeAddress,
@@ -24,16 +24,6 @@ public class Store extends Seller {
     return;
   }
 
-  public void cg_init_Store_1() {
-
-    return;
-  }
-
-  public Store() {
-
-    cg_init_Store_1();
-  }
-
   public Store(
       final String storeName,
       final String storeDescription,
@@ -42,7 +32,7 @@ public class Store extends Seller {
       final Number storeDeliveryPrice,
       final Object storeCategory) {
 
-    cg_init_Store_2(
+    cg_init_Store_1(
         storeName, storeDescription, storeAddress, storeCity, storeDeliveryPrice, storeCategory);
   }
 
@@ -50,6 +40,8 @@ public class Store extends Seller {
 
     return category;
   }
+
+  public Store() {}
 
   public String toString() {
 

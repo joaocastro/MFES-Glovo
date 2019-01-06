@@ -26,7 +26,12 @@ public class GlovoTest {
           "Porto",
           4L,
           Glovo.quotes.ElectronicaQuote.getInstance());
-  private Seller sellerTest1 = new Seller("Rui", "Teste", "FEUP", "Porto", 4L);
+  private Seller sellerTest1 = new Seller("KFC", "Teste", "FEUP", "Porto", 4L);
+  private GlovoApp appTest1 = new GlovoApp();
+  private VDMSeq sellers = SeqUtil.seq(sellerTest1);
+  private VDMSeq users = SeqUtil.seq(userTest1);
+  private VDMSeq drivers = SeqUtil.seq(driTest1);
+  private Order orderTest1;
 
   private void assertTrue(final Boolean cond) {
 
@@ -78,6 +83,11 @@ public class GlovoTest {
     throw new UnsupportedOperationException();
   }
 
+  private void testApp() {
+
+    throw new UnsupportedOperationException();
+  }
+
   public static void main() {
 
     new GlovoTest().testDriver();
@@ -87,6 +97,7 @@ public class GlovoTest {
     new GlovoTest().testSeller();
     new GlovoTest().testStore();
     new GlovoTest().testOrder();
+    new GlovoTest().testApp();
   }
 
   public GlovoTest() {}
@@ -110,6 +121,16 @@ public class GlovoTest {
         + Utils.toString(storeTest1)
         + ", sellerTest1 := "
         + Utils.toString(sellerTest1)
+        + ", appTest1 := "
+        + Utils.toString(appTest1)
+        + ", sellers := "
+        + Utils.toString(sellers)
+        + ", users := "
+        + Utils.toString(users)
+        + ", drivers := "
+        + Utils.toString(drivers)
+        + ", orderTest1 := "
+        + Utils.toString(orderTest1)
         + "}";
   }
 }
