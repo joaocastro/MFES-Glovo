@@ -9,14 +9,8 @@ instance variables
 	private price: rat;
 	
 operations
-
-	-- default constructor
-	public Item : () ==> Item
-		Item () == (
-			return self
-		);
 	
-	-- constructor with all paremeters
+	-- constructor
 	public Item : String * String * rat ==> Item
 		Item (itemName, itemInfo, itemPrice) == (
 			name := itemName;

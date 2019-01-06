@@ -17,14 +17,8 @@ instance variables
 		private category : Category;
 
 operations
-
-	-- default constructor
-	public Restaurant : () ==> Restaurant
-		Restaurant () == (
-			return self
-		);
 	
-	-- constructor with all paremeters
+	-- constructor
 	public Restaurant : String * String * String * String * rat * Category ==> Restaurant
 		Restaurant (restaurantName, restaurantDescription, restaurantAddress, restaurantCity, restaurantDeliveryPrice, restaurantCategory) == (
 			name := restaurantName;

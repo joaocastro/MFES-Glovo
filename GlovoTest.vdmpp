@@ -9,11 +9,12 @@ instance variables
 	private items : seq of Item := [itemTest1];
 	private restTest1 : Restaurant := new Restaurant("McDonalds","cadeia mundial de restaurantes de fast food","Aliados","Porto",5,<Fast_Food>);
 	private storeTest1 : Store := new Store("FNAC","cadeia de lojas","NorteShopping","Porto",4, <Electronica>);
-	private sellerTest1 : Seller := new Seller("Rui", "Teste", "FEUP", "Porto", 4);
+	private sellerTest1 : Seller := new Seller("KFC", "Teste", "FEUP", "Porto", 4);
 	private appTest1 : GlovoApp := new GlovoApp();
 	private sellers: seq of Seller := [sellerTest1];
 	private users: seq of User := [userTest1];
 	private drivers: seq of Driver := [driTest1];
+	private orderTest1 : Order;
 	
 operations
 	private assertTrue: bool ==> ()
@@ -72,10 +73,11 @@ operations
 		assertEqual(storeTest1.getCity(), "Porto");
 		storeTest1.addItem(itemTest1);
 		assertEqual(storeTest1.getItems(),items);
+		assertEqual(storeTest1.getCategory(), <Electronica>);
 	);
 	
 	private testSeller() == (
-		assertEqual(sellerTest1.getName(), "Rui");
+		assertEqual(sellerTest1.getName(), "KFC");
 		assertEqual(sellerTest1.getDescription(), "Teste");
 		assertEqual(sellerTest1.getAddress(), "FEUP");
 		assertEqual(sellerTest1.getCity(), "Porto");
@@ -84,7 +86,6 @@ operations
 	);
 	
 	private testOrder() == (
-		dcl orderTest1 : Order;
 		dcl restaurant : Restaurant := new Restaurant("McDonalds", "Cadeia mundial de restaurantes de fast food", "Aliados", "Porto", 5, <Fast_Food>);
 		dcl item : Item := new Item("BigMac", "Hamburger classico", 3.45);
 		restaurant.addItem(item);
@@ -94,15 +95,49 @@ operations
   	assertEqual(driTest1.getStatus(),<delivering>);
 		orderTest1.finishDelivery();
 		assertEqual(driTest1.getStatus(),<available>);
+		assertEqual(orderTest1.getDeliveryAddress(), "Rua da FEUP");
+		assertEqual(orderTest1.getDeliveryTime(), time);
+		assertEqual(orderTest1.getItems(), [item]);
+		assertEqual(orderTest1.getSeller(), restaurant);
+		assertEqual(orderTest1.getUser(), userTest1);
+		assertEqual(orderTest1.getState(), <delivered>);
+		assertEqual(orderTest1.getDriver(), driTest1);
 	);
 	
 	private testApp() == (
+		dcl restaurant : Restaurant := new Restaurant("McDonalds", "Cadeia mundial de restaurantes de fast food", "Aliados", "Porto", 5, <Fast_Food>);
+		dcl bigMac : Item := new Item("BigMac", "Hamburger classico", 3.45);
+		dcl cheeseBurger : Item := new Item("Cheeseburger", "Hamburger de queijo", 1.25);
+		dcl firstOrder : Order;
+		dcl secondOrder : Order;
+		restaurant.addItem(bigMac);
+		userTest1.deposit(100);
+		appTest1.addSeller(restaurant);
+	
 		appTest1.addDriver(driTest1);
 		appTest1.addSeller(sellerTest1);
 		appTest1.registerUser(userTest1);
 		assertEqual(appTest1.getDrivers(),drivers);
-		assertEqual(appTest1.getSellers(),sellers);
+		assertEqual(appTest1.getSellers(), [restaurant, sellerTest1]);
 		assertEqual(appTest1.getUsers(),users);
+		appTest1.registerUser(new User("Andre", "Lisboa"));
+		appTest1.addDriver(new Driver("Matias", "Lisboa"));
+		assertEqual(appTest1.getSellerByName("KFC"), sellerTest1);
+		assertEqual(appTest1.getAvailableDriversByCity("Porto"), drivers);
+		assertEqual(appTest1.getUserByName("Manuel"), userTest1);
+		firstOrder := new Order("Rua da FEUP", time, [bigMac], userTest1, restaurant);
+		assertTrue(appTest1.addOrder(firstOrder));
+		assertEqual(appTest1.getOrders(), [firstOrder]);
+		secondOrder := new Order("Rua da FEUP", time, [bigMac], userTest1, restaurant);
+		assertFalse(appTest1.addOrder(secondOrder));
+		assertEqual(appTest1.getWaitingOrders(), [secondOrder]);
+		assertEqual(appTest1.getRestaurantsByCity("Porto"), [restaurant]);
+		appTest1.addSeller(storeTest1);
+		assertEqual(appTest1.getStoresByCity("Porto"), [storeTest1]);
+		appTest1.addItemToSeller("McDonalds", cheeseBurger);
+		assertEqual(restaurant.getItems(), [bigMac, cheeseBurger]);
+		firstOrder.finishDelivery();
+		assertEqual(appTest1.triggerWaitingOrder(), secondOrder);
 	);
 	
 	public static main: () ==> ()

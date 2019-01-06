@@ -10,6 +10,8 @@ instance variables
 	private drivers: seq of Driver := [];
 	private users: seq of User := [];
 	private orders: seq of Order := [];
+	inv forall order in set elems orders & order.getUser() in set elems users;
+	inv forall order in set elems orders & order.getSeller() in set elems sellers;
 
 operations
 
@@ -27,12 +29,13 @@ operations
 	
 	-- returns a seller by name
 	pure public getSellerByName : String ==> Seller
-		getSellerByName (name) == (		
-			for seller in sellers do (
-				if seller.getName() = name then return seller;
+		getSellerByName (name) == (
+			dcl seller : Seller;
+			for s in sellers do (
+				if s.getName() = name then seller := s;
 			);
 			
-			return new Seller();
+			return seller;
 		)
 		pre name in set { s.getName() | s in set elems sellers };
 	
@@ -63,12 +66,13 @@ operations
 	
 	-- returns a user by name
 	pure public getUserByName : String ==> User
-		getUserByName (name) == (		
-			for user in users do (
-				if user.getName() = name then return user;
+		getUserByName (name) == (
+			dcl user : User;
+			for u in users do (
+				if u.getName() = name then user := u;
 			);
 			
-			return new User();
+			return user;
 		)
 		pre name in set { u.getName() | u in set elems users };
 
@@ -179,6 +183,6 @@ operations
 			
 			return stores;
 		)
-		post forall store in set elems RESULT & is_(store, Restaurant);
+		post forall store in set elems RESULT & is_(store, Store);
 
 end GlovoApp

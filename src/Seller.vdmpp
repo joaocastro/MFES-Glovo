@@ -15,13 +15,7 @@ instance variables
 
 operations
 
-	-- default constructor
-	public Seller : () ==> Seller
-		Seller () == (
-			return self
-		);
-	
-	-- constructor with all paremeters
+	-- constructor
 	public Seller : String * String * String * String * rat ==> Seller
 		Seller (sellerName, sellerDescription, sellerAddress, sellerCity, sellerDeliveryPrice) == (
 			name := sellerName;
