@@ -13,6 +13,12 @@ instance variables
 
 operations
 
+	-- default constructor
+	public GlovoApp : () ==> GlovoApp
+		GlovoApp () == (
+			return self
+		);
+
 	-- returns all the available sellers
 	pure public getSellers : () ==> seq of Seller
 		getSellers () == (

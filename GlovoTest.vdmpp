@@ -10,6 +10,10 @@ instance variables
 	private restTest1 : Restaurant := new Restaurant("McDonalds","cadeia mundial de restaurantes de fast food","Aliados","Porto",5,<Fast_Food>);
 	private storeTest1 : Store := new Store("FNAC","cadeia de lojas","NorteShopping","Porto",4, <Electronica>);
 	private sellerTest1 : Seller := new Seller("Rui", "Teste", "FEUP", "Porto", 4);
+	private appTest1 : GlovoApp := new GlovoApp();
+	private sellers: seq of Seller := [sellerTest1];
+	private users: seq of User := [userTest1];
+	private drivers: seq of Driver := [driTest1];
 	
 operations
 	private assertTrue: bool ==> ()
@@ -80,13 +84,25 @@ operations
 	);
 	
 	private testOrder() == (
-		
 		dcl orderTest1 : Order;
 		dcl restaurant : Restaurant := new Restaurant("McDonalds", "Cadeia mundial de restaurantes de fast food", "Aliados", "Porto", 5, <Fast_Food>);
 		dcl item : Item := new Item("BigMac", "Hamburger classico", 3.45);
 		restaurant.addItem(item);
 		orderTest1 := new Order("Rua da FEUP", time, [item], userTest1, restaurant);
-		
+		userTest1.deposit(50);
+		orderTest1.startDelivery(driTest1);
+  	assertEqual(driTest1.getStatus(),<delivering>);
+		orderTest1.finishDelivery();
+		assertEqual(driTest1.getStatus(),<available>);
+	);
+	
+	private testApp() == (
+		appTest1.addDriver(driTest1);
+		appTest1.addSeller(sellerTest1);
+		appTest1.registerUser(userTest1);
+		assertEqual(appTest1.getDrivers(),drivers);
+		assertEqual(appTest1.getSellers(),sellers);
+		assertEqual(appTest1.getUsers(),users);
 	);
 	
 	public static main: () ==> ()
@@ -99,6 +115,7 @@ operations
     	new GlovoTest().testSeller();
     	new GlovoTest().testStore();
     	new GlovoTest().testOrder();
+    	new GlovoTest().testApp();
 	);
 
 end GlovoTest
