@@ -7,7 +7,7 @@ types
 
 instance variables
 
-	private name: String := [];
+	protected name: String := [];
 	private city: String := [];
 	private status: DriverStatus := <available>;
 

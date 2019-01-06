@@ -16,6 +16,7 @@ instance variables
 	private seller: Seller;
 	private state: State := <waiting>;
 	private driver: Driver;
+	private emptyDriver:Driver := new Driver("Null","Null");
 
 operations
 
@@ -26,6 +27,7 @@ operations
 			items := orderItems;
 			user := orderUser;
 			seller := orderSeller;
+			driver := emptyDriver;
 			return self
 		)
 	pre len orderDeliveryAddress > 0 and 

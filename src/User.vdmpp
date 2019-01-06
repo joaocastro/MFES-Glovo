@@ -44,7 +44,7 @@ operations
 		charge(amount) == (
 			balance := balance - amount;
 		)
-		pre amount < balance and amount > 0;
+		pre amount <= balance and amount > 0;
 		
 	-- deposits to the user's balance an amount
 	public deposit: rat ==> ()
