@@ -1,0 +1,108 @@
+class GlovoTest
+types
+	public TimeStamp :: minutes : nat
+											seconds : nat;
+values
+-- TODO Define values here
+instance variables
+	private time : Order`TimeStamp := mk_Order`TimeStamp(5,10);
+	
+	driTest1:Driver := new Driver("Luis","Porto");
+	userTest1:User := new User("Manuel", "Porto");
+	itemTest1:Item := new Item("Caneta","Caneta para escrita",1);
+	restTest1:Restaurant := new Restaurant("McDonalds","cadeia mundial de restaurantes de fast food","Aliados","Porto",5,<Fast_Food>);
+	storeTest1:Store := new Store("FNAC","cadeia de lojas","NorteShopping","Porto",4, <Electronica>);
+	sellerTest1:Seller := new Seller("Rui","Teste","FEUP","Porto",4);
+	-- orderTest1:Order := new Order("Rua da FEUP",time,items,userTest1,sellerTest1);
+	private items: seq of Item := [itemTest1];
+	
+operations
+	private assertTrue: bool ==> ()
+    assertTrue(cond) == return
+    pre cond;
+    
+  private assertFalse: bool ==> ()
+  	assertFalse(cond) == return
+    pre not cond;
+    
+  private assertEqual: ? * ? ==> ()
+    assertEqual(expected, actual) == return
+		post expected = actual;
+		
+	private testDriver() == (
+		assertEqual(driTest1.getName(), "Luis");
+		assertEqual(driTest1.getCity(), "Porto");
+		assertEqual(driTest1.getStatus(), <available>);
+		driTest1.makeUnavailable();
+		assertEqual(driTest1.getStatus(), <unavailable>);
+		driTest1.makeAvailable();
+		driTest1.makeDelivering();
+		assertEqual(driTest1.getStatus(), <delivering>);
+	);
+	
+	private testUser() == (
+		assertEqual(userTest1.getName(), "Manuel");
+		assertEqual(userTest1.getCity(), "Porto");
+		userTest1.deposit(5);
+		assertEqual(userTest1.getBalance(), 5);
+		userTest1.charge(5);
+		assertEqual(userTest1.getBalance(), 0);
+	);
+	
+	private testItem() == (
+		assertEqual(itemTest1.getName(), "Caneta");
+		assertEqual(itemTest1.getInfo(), "Caneta para escrita");
+		assertEqual(itemTest1.getPrice(), 1);
+	);
+	
+	private testRestaurant() == (
+		assertEqual(restTest1.getCategory(), <Fast_Food>);
+		assertEqual(restTest1.getDeliveryPrice(), 5);
+		assertEqual(restTest1.getName(), "McDonalds");
+		assertEqual(restTest1.getDescription(),"cadeia mundial de restaurantes de fast food");
+		assertEqual(restTest1.getAddress(), "Aliados");
+		assertEqual(restTest1.getCity(), "Porto");
+		restTest1.addItem(itemTest1);
+		assertEqual(restTest1.getItems(),items);
+	);
+	
+	private testStore() == (
+		assertEqual(storeTest1.getName(), "FNAC");
+		assertEqual(storeTest1.getDescription(), "cadeia de lojas");
+		assertEqual(storeTest1.getAddress(), "NorteShopping");
+		assertEqual(storeTest1.getCity(), "Porto");
+		storeTest1.addItem(itemTest1);
+		assertEqual(storeTest1.getItems(),items);
+	);
+	
+	private testSeller() == (
+		assertEqual(sellerTest1.getName(), "Rui");
+		assertEqual(sellerTest1.getDescription(), "Teste");
+		assertEqual(sellerTest1.getAddress(), "FEUP");
+		assertEqual(sellerTest1.getCity(), "Porto");
+		sellerTest1.addItem(itemTest1);
+		assertEqual(sellerTest1.getItems(),items);
+	);
+	
+	private testOrder() == (
+		sellerTest1.addItem(itemTest1);
+	);
+	
+	public static main: () ==> ()
+    main() ==
+    (
+    	new GlovoTest().testDriver();
+    	new GlovoTest().testUser();
+    	new GlovoTest().testItem();
+    	new GlovoTest().testRestaurant();
+    	new GlovoTest().testSeller();
+    	new GlovoTest().testStore();
+    	
+    	-- new GlovoTest().testOrder();
+	);
+		
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end GlovoTest
