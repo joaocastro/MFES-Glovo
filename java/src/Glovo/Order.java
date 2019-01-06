@@ -12,6 +12,7 @@ public class Order {
   private Seller seller;
   private Object state = Glovo.quotes.waitingQuote.getInstance();
   private Driver driver;
+  private Driver emptyDriver = new Driver("Null", "Null");
 
   public void cg_init_Order_1(
       final String orderDeliveryAddress,
@@ -25,6 +26,7 @@ public class Order {
     items = Utils.copy(orderItems);
     user = orderUser;
     seller = orderSeller;
+    driver = emptyDriver;
     return;
   }
 
@@ -51,8 +53,8 @@ public class Order {
   public Number getTotalPrice() {
 
     Number totalPrice = seller.getDeliveryPrice();
-    for (Iterator iterator_16 = items.iterator(); iterator_16.hasNext(); ) {
-      Item item = (Item) iterator_16.next();
+    for (Iterator iterator_17 = items.iterator(); iterator_17.hasNext(); ) {
+      Item item = (Item) iterator_17.next();
       {
         totalPrice = totalPrice.doubleValue() + item.getPrice().doubleValue();
       }
@@ -123,6 +125,8 @@ public class Order {
         + Utils.toString(state)
         + ", driver := "
         + Utils.toString(driver)
+        + ", emptyDriver := "
+        + Utils.toString(emptyDriver)
         + "}";
   }
 

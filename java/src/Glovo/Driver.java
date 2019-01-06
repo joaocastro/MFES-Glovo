@@ -5,7 +5,7 @@ import org.overture.codegen.runtime.*;
 
 @SuppressWarnings("all")
 public class Driver {
-  private String name = SeqUtil.toStr(SeqUtil.seq());
+  protected String name = SeqUtil.toStr(SeqUtil.seq());
   private String city = SeqUtil.toStr(SeqUtil.seq());
   private Object status = Glovo.quotes.availableQuote.getInstance();
 

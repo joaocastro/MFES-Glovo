@@ -13,13 +13,14 @@ public class Delivery extends Thread {
 	}
 
     public void run(){
-       System.out.println("Started");
+       main.printNotification("Started delivery");
        try {
-    	   Thread.sleep(2000 * (int) order.getDeliveryTime().minutes);
+    	   Thread.sleep(1000 * (int) order.getDeliveryTime().minutes);
        } catch (InterruptedException e) {
-    	   System.out.println("Error in delivery");
+    	   main.printNotification("Error in delivery");
+    	   return;
        }
-       System.out.println("Ended");
+       main.printNotification("Ended delivery");
        order.finishDelivery();
        main.triggerDelivery();
     }

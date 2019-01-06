@@ -78,9 +78,7 @@ public class Main {
 	
 	private void initDrivers() {
 		app.addDriver(new Driver("João Costa", "Porto"));
-		app.addDriver(new Driver("Matilde Andrade", "Porto"));
-		app.addDriver(new Driver("José António", "Porto"));
-		app.addDriver(new Driver("Manuel Carreiro", "Porto"));
+		app.addDriver(new Driver("Matilde Andrade", "Lisboa"));
 	}
 	
 	private void initUsers() {
@@ -124,6 +122,10 @@ public class Main {
 	
 	public void clear() {
 		System.out.print("\033[H\033[2J");
+	}
+	
+	public void printNotification(String tooltip) {
+		System.out.print("\033[1;30H" + tooltip + "\033[8;1H");
 	}
 	
 	public void showTooltip(String tooltip) {
