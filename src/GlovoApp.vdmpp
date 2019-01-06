@@ -119,7 +119,8 @@ operations
 			);
 			
 			return false;	
-		);
+		)
+		pre order.getUser() in set elems users;
 	
 	-- triggers a wating order if there is any
 	public triggerWaitingOrder : () ==> Order
