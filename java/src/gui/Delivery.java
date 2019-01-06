@@ -15,7 +15,7 @@ public class Delivery extends Thread {
     public void run(){
        System.out.println("Started");
        try {
-    	   Thread.sleep(5000 * (int) order.getDeliveryTime().minutes);
+    	   Thread.sleep(2000 * (int) order.getDeliveryTime().minutes);
        } catch (InterruptedException e) {
     	   System.out.println("Error in delivery");
        }

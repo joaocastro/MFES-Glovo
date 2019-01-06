@@ -81,7 +81,7 @@ operations
 				if order.getState() = <waiting> then waitingOrders := waitingOrders ^ [order];
 			);
 			
-			return orders;
+			return waitingOrders;
 	);
 	
 	-- adds a seller to Glovo
@@ -120,7 +120,8 @@ operations
 			
 			return false;	
 		);
-		
+	
+	-- triggers a wating order if there is any
 	public triggerWaitingOrder : () ==> Order
 		triggerWaitingOrder () == (
 			dcl order : Order;

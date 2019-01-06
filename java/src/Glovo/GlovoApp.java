@@ -87,7 +87,7 @@ public class GlovoApp {
         }
       }
     }
-    return Utils.copy(orders);
+    return Utils.copy(waitingOrders);
   }
 
   public void addSeller(final Seller newSeller) {

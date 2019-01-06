@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -37,26 +38,29 @@ public class Main {
 			init();
 		} catch (IOException e) {
 			System.out.println("Error opening data file.");
+			return;
 		}
 		
-		triggerDelivery();
 		menu();
+		
 	}
 	
 	public void menu() {
+		clear();
 		System.out.println("=== Glovo ===\n"
 				+ "   1. Client area\n"
 				+ "   2. Admin area\n"
 				+ "   0. Exit\n"
 				+ "Choose an option: ");
 
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); menu(); return; }
 		switch (option) {
 			case 1: client.menu();
 					break;
 			case 2: admin.menu();
 					break;
 			case 0: return;
+			default: menu();
 		}
 	}
 	
@@ -116,5 +120,14 @@ public class Main {
 			Delivery delivery = new Delivery(order, this);
 			delivery.start();
 		}
+	}
+	
+	public void clear() {
+		System.out.print("\033[H\033[2J");
+	}
+	
+	public void showTooltip(String tooltip) {
+		System.out.println(tooltip);
+		try { Thread.sleep(1000); } catch (InterruptedException e) {}
 	}
 }

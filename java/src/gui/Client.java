@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -43,13 +44,14 @@ public class Client {
 	}
 	
 	private void loginMenu() {
+		main.clear();
 		System.out.println("=== Client area ===\n"
 				+ "   1. Login\n"
 				+ "   2. Register\n"
 				+ "   0. Back\n"
 				+ "Choose an option: ");
 
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); loginMenu(); return; }
 		switch (option) {
 			case 1: login();
 					break;
@@ -57,14 +59,16 @@ public class Client {
 					break;
 			case 0: main.menu();
 					return;
+			default: loginMenu();
 		}
 	}
 	
 	private void loggedMenu() {
-		String hasOrderOption = this.orderItems.isEmpty() ? "" : "4. Order Details\n";
+		String hasOrderOption = this.orderItems.isEmpty() ? "5. Logout\n" : "4. Order Details\n5. Logout\n";
 		
+		main.clear();
 		System.out.println("=== Welcome " + user.getName() + "! ===\n"
-				+ "Balance: " + user.getBalance() + "€\n"
+				+ String.format("Balance: %.2f€\n",user.getBalance().floatValue())
 				+ "---------------\n"
 				+ "1. Make deposit\n"
 				+ "2. Stores\n"
@@ -73,7 +77,7 @@ public class Client {
 				+ "0. Back\n"
 				+ "Choose an option: ");
 
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); loggedMenu(); return; }
 		switch (option) {
 			case 1: makeDeposit();
 					break;
@@ -84,10 +88,11 @@ public class Client {
 			case 4: if(this.orderItems.isEmpty()) loggedMenu();
 					else orderOptions();
 					break;
+			case 5: logout();
+					break;
 			case 0: main.menu();
 					break;
-			default: 
-				loggedMenu();
+			default: loggedMenu();
 		}
 	}
 	
@@ -95,8 +100,9 @@ public class Client {
 		Random rand = new Random();
 		
 		if(this.orderAddress.isEmpty()) promptAddress();
-		if (this.order == null) this.order = new Order(this.orderAddress, new TimeStamp(rand.nextInt(30) + 1, rand.nextInt(4) * 15), this.orderItems, this.user, app.getSellerByName(this.orderSeller));
-				
+		if (this.order == null) this.order = new Order(this.orderAddress, new TimeStamp(rand.nextInt(15) + 16, rand.nextInt(4) * 15), this.orderItems, this.user, app.getSellerByName(this.orderSeller));
+		
+		main.clear();
 		System.out.println("=== Order information ===\n"
 				+ "Delivery Time: " + String.format("%02dm %02ds\n", this.order.getDeliveryTime().minutes, this.order.getDeliveryTime().seconds)
 				+ String.format("Cost: %.2f€\n", this.order.getTotalPrice())
@@ -110,7 +116,7 @@ public class Client {
 				+ "0. Back\n"
 				+ "Choose an option: ");
 
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); orderOptions(); return; }
 		switch (option) {
 			case 1: dispatchOrder();
 					break;
@@ -119,18 +125,17 @@ public class Client {
 					break;
 			case 0: main.menu();
 					break;
-			default: 
-				loggedMenu();
+			default: loggedMenu();
 		}
 	}
 	
 	private void dispatchOrder() {
-		if ((Float) this.order.getTotalPrice() > (Float) this.user.getBalance()) {
-			System.out.println("Not enough balance to dispatch order. Please add funds to your account.");
+		if (this.order.getTotalPrice().floatValue() > this.user.getBalance().floatValue()) {
+			main.showTooltip("Not enough balance to dispatch order. Please add funds to your account.");
 		} else {
 			main.dispatchOrder(this.order);
 			resetOrder();
-			System.out.println("Order dispatched.");			
+			main.showTooltip("Order dispatched.");			
 		}
 		loggedMenu();
 	}
@@ -147,6 +152,7 @@ public class Client {
 	private void promptAddress() {
 		System.out.println("Enter address for order:");
 
+		reader.nextLine();
 		this.orderAddress = reader.nextLine();
 	}
 	
@@ -155,10 +161,13 @@ public class Client {
 
 		float amount = Float.parseFloat(reader.next());
 		user.deposit(amount);
-		System.out.println("Amount deposited");
+		main.showTooltip("Amount deposited");
+		
+		loggedMenu();
 	};
 	
 	private void login() {
+		main.clear();
 		System.out.println("=== Login ===\n"
 				+ "Username: ");
 
@@ -169,12 +178,21 @@ public class Client {
 			loggedMenu();
 		}
 		else {
-			System.out.println("User not found. Redirecting to register");
+			main.showTooltip("User not found. Redirecting to register");
 			register();
 		}
 	}
 	
+	private void logout() {
+		this.loggedIn = false;
+		this.user = null;
+		this.orderAddress = "";
+		resetOrder();
+		loginMenu();
+	}
+	
 	private void register() {
+		main.clear();
 		System.out.println("=== Register ===\n"
 				+ "Username: ");
 
@@ -195,6 +213,7 @@ public class Client {
 	
 	private void listRestaurants() {
 		VDMSeq restaurants = app.getRestaurantsByCity(user.getCity());
+		main.clear();
 		System.out.println("Here are all the options in your area.\n"
 				+ "Choose an option:");
 		for (int i = 0; i < restaurants.size(); i++) {
@@ -203,15 +222,17 @@ public class Client {
 		}
 		System.out.println("0. Back");
 		
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); listRestaurants(); return; }
 		switch(option) {
 			case 0: loggedMenu();
+					break;
 			default: restaurantPage(option - 1);
 		}
 	}
 	
 	private void listStores() {
 		VDMSeq stores = app.getStoresByCity(user.getCity());
+		main.clear();
 		System.out.println("Here are all the options in your area.\n"
 				+ "Choose an option:");
 		for (int i = 0; i < stores.size(); i++) {
@@ -220,26 +241,32 @@ public class Client {
 		}
 		System.out.println("0. Back");
 		
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); listStores(); return; }
 		switch(option) {
 			case 0: loggedMenu();
+					break;
 			default: storePage(option - 1);
 		}
 	}
 	
 	private void restaurantPage(int index) {
 		Restaurant restaurant = (Restaurant) app.getRestaurantsByCity(user.getCity()).get(index);
+		if (restaurant == null) listRestaurants();
 		if (!this.orderSeller.equals(restaurant.getName())) resetOrder();
 		
 		printSellerInfo(restaurant);
 		
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); restaurantPage(index); return; }
 		switch(option) {
-			case 0: listRestaurants();
+			case 0: loggedMenu();
+					break;
 			default: if(restaurant.getItems().get(option - 1) != null) {
 				this.orderItems = SeqUtil.conc(Utils.copy(this.orderItems), SeqUtil.seq(restaurant.getItems().get(option - 1)));
 				this.orderSeller = restaurant.getName();
-				System.out.println("Item added to order.");
+				main.showTooltip("Item added to order.");
+				restaurantPage(index);
+			} else {
+				main.showTooltip("Option not found.");
 				restaurantPage(index);
 			}
 		}
@@ -247,26 +274,33 @@ public class Client {
 	
 	private void storePage(int index) {
 		Store store = (Store) app.getStoresByCity(user.getCity()).get(index);
+		if (store == null) listStores();
 		if (!this.orderSeller.equals(store.getName())) resetOrder();
 		
 		printSellerInfo(store);
 		
-		int option = reader.nextInt();
+		int option; try { option = reader.nextInt(); } catch (InputMismatchException e) { reader.nextLine(); storePage(index); return; }
 		switch(option) {
-			case 0: listStores();
+			case 0: loggedMenu();
+					break;
 			default: if(store.getItems().get(option - 1) != null) {
 				this.orderItems = SeqUtil.conc(Utils.copy(this.orderItems), SeqUtil.seq(store.getItems().get(option - 1)));
 				this.orderSeller = store.getName();
-				System.out.println("Item added to order.");
+				main.showTooltip("Item added to order.");
+				storePage(index);
+			} else {
+				main.showTooltip("Option not found.");
 				storePage(index);
 			}
 		}
 	}
 	
 	private void printSellerInfo(Seller seller) {
+		main.clear();
 		System.out.println("== " + seller.getName() + " ==\n"
 				+ "Description: " + seller.getDescription() + "\n"
 				+ "Address: " + seller.getAddress() + "\n"
+				+ "Delivery Cost: " + seller.getDeliveryPrice() + "€\n"
 				+ "Items:");
 		for (int i = 0; i < seller.getItems().size(); i++) {
 			Item item = (Item) seller.getItems().get(i);
